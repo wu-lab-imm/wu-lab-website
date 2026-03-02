@@ -1,0 +1,138 @@
+[
+  {
+    "id": "net-nature-2024",
+    "title": "Substrate binding and inhibition mechanism of norepinephrine transporter",
+    "titleCn": "去甲肾上腺素转运体的底物结合和抑制机制",
+    "authors": [
+      "Wenming Ji#",
+      "Anran Miao#",
+      "Kai Liang#",
+      "Jiameng Liu#",
+      "Yuhan Qi",
+      "Yue Zhou",
+      "Xinli Duan",
+      "Jixue Sun",
+      "Lipeng Lai",
+      "Jingxiang Wu*"
+    ],
+    "journal": "Nature",
+    "year": 2024,
+    "volume": "633",
+    "issue": "8029",
+    "pages": "473-479",
+    "impactFactor": 48.5,
+    "doi": "10.1038/s41586-024-07810-5",
+    "isCNS": true,
+    "isHighImpact": true,
+    "labMembers": ["Wenming Ji", "Anran Miao", "Kai Liang", "Jiameng Liu", "Yuhan Qi", "Yue Zhou", "Jingxiang Wu"],
+    "category": "neuroscience"
+  },
+  {
+    "id": "duox1-natcomm-2021",
+    "title": "Structures of human dual oxidase 1 complex in low-calcium and high-calcium states",
+    "titleCn": "人源双氧化酶1复合物在低钙和高钙状态下的结构",
+    "authors": [
+      "Jingxiang Wu#",
+      "Rui Liu",
+      "Kangcheng Song",
+      "Lei Chen*"
+    ],
+    "journal": "Nature Communications",
+    "year": 2021,
+    "volume": "12",
+    "issue": "1",
+    "pages": "155-165",
+    "impactFactor": 12.1,
+    "doi": "10.1038/s41467-020-20466-9",
+    "labMembers": ["Jingxiang Wu"],
+    "category": "oxidase"
+  },
+  {
+    "id": "katp-cellreports-2019",
+    "title": "The Structural Basis for the Binding of Repaglinide to the Pancreatic K-ATP Channel",
+    "titleCn": "瑞格列奈结合胰腺K-ATP通道的结构基础",
+    "authors": [
+      "Dian Ding#",
+      "Mengmeng Wang#",
+      "Jingxiang Wu#",
+      "Yunlu Kang",
+      "Lei Chen*"
+    ],
+    "journal": "Cell Reports",
+    "year": 2019,
+    "volume": "27",
+    "issue": "6",
+    "pages": "1848-1857",
+    "impactFactor": 8.1,
+    "doi": "10.1016/j.celrep.2019.04.050",
+    "labMembers": ["Jingxiang Wu"],
+    "category": "metabolic"
+  },
+  {
+    "id": "katp-proteincell-2018",
+    "title": "Ligand binding and conformational changes of SUR1 subunit in pancreatic ATP-sensitive potassium channels",
+    "titleCn": "胰腺ATP敏感钾通道SUR1亚基的配体结合和构象变化",
+    "authors": [
+      "Jingxiang Wu#",
+      "Dian Ding",
+      "Mengmeng Wang",
+      "Yunlu Kang",
+      "Xin Zeng",
+      "Lei Chen*"
+    ],
+    "journal": "Protein & Cell",
+    "year": 2018,
+    "volume": "9",
+    "issue": "6",
+    "pages": "553-567",
+    "impactFactor": 10.2,
+    "doi": "10.1007/s13238-018-0530-y",
+    "labMembers": ["Jingxiang Wu"],
+    "category": "metabolic"
+  },
+  {
+    "id": "katp-cell-2017",
+    "title": "Structure of a Pancreatic ATP-Sensitive Potassium Channel",
+    "titleCn": "胰腺ATP敏感钾通道的结构",
+    "authors": [
+      "Ningning Li#",
+      "Jingxiang Wu#",
+      "Dian Ding",
+      "Jiaxuan Cheng",
+      "Ning Gao*",
+      "Lei Chen*"
+    ],
+    "journal": "Cell",
+    "year": 2017,
+    "volume": "168",
+    "issue": "1",
+    "pages": "101-110",
+    "impactFactor": 38.6,
+    "doi": "10.1016/j.cell.2016.11.028",
+    "isCNS": true,
+    "isHighImpact": true,
+    "labMembers": ["Jingxiang Wu"],
+    "category": "metabolic"
+  },
+  {
+    "id": "sad-natcomm-2015",
+    "title": "Structural insight into the mechanism of synergistic autoinhibition of SAD kinases",
+    "titleCn": "SAD激酶协同自抑制机制的結構洞察",
+    "authors": [
+      "Jingxiang Wu#",
+      "Yun-Sheng Cheng",
+      "Jue Wang",
+      "Lei Chen",
+      "Mei Ding",
+      "Jia-Wei Wu*"
+    ],
+    "journal": "Nature Communications",
+    "year": 2015,
+    "volume": "6",
+    "pages": "8953-8964",
+    "impactFactor": 12.1,
+    "doi": "10.1038/ncomms9953",
+    "labMembers": ["Jingxiang Wu"],
+    "category": "kinase"
+  }
+]

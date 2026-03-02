@@ -1,0 +1,205 @@
+---
+// 加入我们页 - join.astro
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// 职位信息
+const positions = [
+  {
+    title: '博士后',
+    titleEn: 'Postdoctoral',
+    requirements: [
+      '已获得或即将获得生物学、药学、化学等相关专业博士学位',
+      '具有冷冻电镜、X射线晶体学、生物化学或细胞生物学研究经验者优先',
+      '具有良好的英文文献阅读和科研论文写作能力',
+      '工作认真负责，具有团队合作精神',
+    ],
+    directions: [
+      '疾病相关蛋白的结构与功能研究',
+      '药物靶点的结构生物学研究',
+      '药物作用机制研究',
+    ],
+    benefits: [
+      '提供具有竞争力的薪酬待遇',
+      '良好的科研平台和职业发展机会',
+      '协助申请博士后基金和其他科研项目',
+    ],
+  },
+  {
+    title: '博士研究生',
+    titleEn: 'PhD Student',
+    requirements: [
+      '生物学、药学、化学等相关专业背景',
+      '对结构生物学和药物研发有浓厚兴趣',
+      '具有良好的学习能力和科研潜力',
+    ],
+    directions: [
+      '结构生物学技术（冷冻电镜、X射线晶体学）',
+      '蛋白质生物化学',
+      '药物作用机制研究',
+    ],
+  },
+  {
+    title: '硕士研究生',
+    titleEn: 'Master Student',
+    requirements: [
+      '生物学、药学、化学等相关专业背景',
+      '对结构生物学感兴趣',
+      '具有较强的学习能力和动手能力',
+    ],
+    directions: [
+      '蛋白质表达与纯化',
+      '结构生物学基础实验技术',
+      '数据分析与处理',
+    ],
+  },
+];
+
+// 申请流程
+const applicationSteps = [
+  { step: 1, title: '联系投递', description: '发送个人简历和研究兴趣说明至实验室邮箱' },
+  { step: 2, title: '准备材料', description: '附上代表性学术成果（论文、成绩单等）' },
+  { step: 3, title: '提供推荐', description: '提供2-3位推荐人联系方式' },
+  { step: 4, title: '面试考核', description: '初步筛选后安排面试' },
+  { step: 5, title: '录取通知', description: '面试通过后发放录取通知' },
+];
+
+// 实验室环境
+const envItems = [
+  { icon: '🔬', title: '先进设施', description: '冷冻电镜设施（北京大学冷冻电镜平台支持）' },
+  { icon: '💎', title: '晶体学设备', description: 'X射线晶体衍射设备' },
+  { icon: '🧪', title: '实验平台', description: '完善的生物化学和细胞生物学实验平台' },
+  { icon: '👥', title: '学术氛围', description: '定期组内学术讨论' },
+  { icon: '🌍', title: '合作交流', description: '参加国内外学术会议机会' },
+];
+---
+
+<Layout title="加入我们" description="欢迎有志于结构生物学和药物研发的优秀人才加入Wu Lab">
+  <Header />
+
+  <main>
+    <!-- 页面标题 -->
+    <section class="bg-white pt-28 pb-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          加入我们 <span class="text-gray-500">| Join Us</span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          欢迎有志于结构生物学和药物研发的优秀人才加入Wu Lab
+        </p>
+      </div>
+    </section>
+
+    <!-- 招聘信息 Section -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-12 text-center">
+          开放职位 <span class="text-amber-600">| Open Positions</span>
+        </h2>
+
+        <div class="space-y-8">
+          {positions.map((position) => (
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+              <div class="bg-gradient-to-r from-gray-900 to-gray-800 px-8 py-5 transition-all duration-300 group-hover:from-amber-700 group-hover:to-amber-600">
+                <h3 class="text-xl font-display font-bold text-white">{position.title}</h3>
+                <p class="text-white/70 text-sm mt-1">{position.titleEn}</p>
+              </div>
+
+              <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <!-- 岗位要求 -->
+                  <div>
+                    <h4 class="text-sm font-bold text-amber-600 uppercase tracking-widest mb-4 flex items-center">
+                      <span class="w-6 h-px bg-amber-500 mr-3"></span>
+                      岗位要求
+                    </h4>
+                    <ul class="space-y-3">
+                      {position.requirements.map((req) => (
+                        <li class="flex items-start text-gray-600">
+                          <svg class="w-5 h-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                          {req}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    {/* 研究方向 */}
+                    {position.directions && (
+                      <div class="mb-6">
+                        <h4 class="text-sm font-bold text-amber-600 uppercase tracking-widest mb-4 flex items-center">
+                          <span class="w-6 h-px bg-amber-500 mr-3"></span>
+                          研究方向
+                        </h4>
+                        <ul class="space-y-2">
+                          {position.directions.map((dir) => (
+                            <li class="flex items-start text-gray-600">
+                              <svg class="w-5 h-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                              </svg>
+                              {dir}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 待遇 */}
+                    {position.benefits && (
+                      <div>
+                        <h4 class="text-sm font-bold text-amber-600 uppercase tracking-widest mb-4 flex items-center">
+                          <span class="w-6 h-px bg-amber-500 mr-3"></span>
+                          待遇
+                        </h4>
+                        <ul class="space-y-2">
+                          {position.benefits.map((benefit) => (
+                            <li class="flex items-start text-gray-600">
+                              <svg class="w-5 h-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                              </svg>
+                              {benefit}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 联系方式 Section -->
+    <section class="py-20 bg-gray-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold mb-8">联系我们 <span class="text-amber-500">| Contact Us</span></h2>
+        <div class="max-w-2xl mx-auto">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+            <div>
+              <h3 class="font-semibold mb-2 text-amber-500">联系人</h3>
+              <p class="text-gray-300">吴惊香 研究员</p>
+            </div>
+            <div>
+              <h3 class="font-semibold mb-2 text-amber-500">邮箱</h3>
+              <a href="mailto:wujingxiang@imm.ac.cn" class="text-amber-400 hover:text-amber-300 transition-colors">wujingxiang@imm.ac.cn</a>
+            </div>
+            <div class="md:col-span-2">
+              <h3 class="font-semibold mb-2 text-amber-500">地址</h3>
+              <p class="text-gray-300">北京市大兴区永旺路37号中国医学科学院药物研究所产学研基地，邮编102600</p>
+            </div>
+          </div>
+          <p class="mt-8 text-gray-400">欢迎随时咨询，期待您的加入！</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

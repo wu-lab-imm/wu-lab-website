@@ -1,0 +1,21 @@
+---
+// 首页 - index.astro (简化版)
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+
+const base = '/wu-lab-website';
+---
+
+<Layout title="Wu Lab - 结构生物学研究">
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <Hero />
+  </main>
+
+  <Footer />
+</Layout>

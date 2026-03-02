@@ -1,0 +1,136 @@
+---
+// PublicationItem 组件 - 论文条目 (学术精致风格)
+
+interface Props {
+  title: string;
+  authors: string[];
+  journal: string;
+  year: number;
+  volume?: string;
+  pages?: string;
+  impactFactor?: number;
+  doi?: string;
+  pdfUrl?: string;
+  isCNS?: boolean;
+  isHighImpact?: boolean;
+  labMembers?: string[];
+}
+
+const {
+  title,
+  authors,
+  journal,
+  year,
+  volume,
+  pages,
+  impactFactor,
+  doi,
+  pdfUrl,
+  isCNS = false,
+  isHighImpact = false,
+  labMembers = []
+} = Astro.props;
+
+// 格式化作者列表，实验室成员名字加粗
+const formatAuthors = (authors: string[]) => {
+  return authors.map(author => {
+    const cleanName = author.replace(/[#*]/g, '').trim();
+    const isLabMember = labMembers.some(member => cleanName.includes(member));
+    return {
+      name: author,
+      isLabMember
+    };
+  });
+};
+
+const formattedAuthors = formatAuthors(authors);
+
+// 期刊颜色映射
+const journalColors: Record<string, string> = {
+  'Nature': 'bg-amber-600 text-white',
+  'Cell': 'bg-blue-600 text-white',
+  'Science': 'bg-red-600 text-white',
+  'Nature Communications': 'bg-green-600 text-white',
+  'Cell Reports': 'bg-purple-600 text-white',
+  'Protein & Cell': 'bg-orange-600 text-white',
+};
+
+const journalBadgeColor = journalColors[journal] || 'bg-stone-600 text-white';
+---
+
+<article class:list={[
+  'relative bg-white p-6 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 border-l-4',
+  isCNS ? 'border-l-amber-500 bg-stone-50' : 'border-l-stone-200'
+]}>
+  <!-- 期刊徽章 -->
+  <div class="flex items-center gap-3 mb-3">
+    <span class:list={['px-2.5 py-1 text-xs font-medium tracking-wider rounded-sm', journalBadgeColor]}>
+      {journal}
+    </span>
+    <span class="text-sm text-stone-400">{year}</span>
+    {impactFactor && (
+      <span class="text-xs px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-sm">
+        IF: {impactFactor}
+      </span>
+    )}
+    {isCNS && (
+      <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-800 rounded-sm font-medium">
+        High Impact
+      </span>
+    )}
+  </div>
+
+  <!-- 论文标题 -->
+  <h3 class="text-lg font-display font-semibold text-stone-900 mb-3 leading-snug hover:text-amber-700 transition-colors duration-300">
+    {title}
+  </h3>
+
+  <!-- 作者列表 -->
+  <div class="flex flex-wrap gap-x-2 gap-y-1 mb-3 text-sm">
+    {formattedAuthors.map((author, index) => (
+      <span>
+        <span class:list={[author.isLabMember ? 'font-medium text-stone-900' : 'text-stone-500']}>
+          {author.name}
+        </span>
+        {index < authors.length - 1 && <span class="text-stone-300">,</span>}
+      </span>
+    ))}
+  </div>
+
+  <!-- 期刊信息 -->
+  <p class="text-stone-500 text-sm mb-4">
+    <span class="italic">{journal}</span>
+    {volume && <span>, {volume}</span>}
+    {pages && <span>, {pages}</span>}
+  </p>
+
+  <!-- 操作链接 -->
+  <div class="flex items-center gap-3 pt-3 border-t border-stone-100">
+    {doi && (
+      <a
+        href={`https://doi.org/${doi}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-sm hover:bg-amber-700 transition-colors duration-300"
+      >
+        <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+        </svg>
+        DOI
+      </a>
+    )}
+    {pdfUrl && (
+      <a
+        href={pdfUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center px-4 py-2 border border-stone-300 text-stone-600 text-sm font-medium rounded-sm hover:border-amber-600 hover:text-amber-600 transition-colors duration-300"
+      >
+        <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        PDF
+      </a>
+    )}
+  </div>
+</article>

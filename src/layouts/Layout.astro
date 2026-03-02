@@ -1,0 +1,35 @@
+---
+// 导入全局样式
+import '../styles/global.css';
+
+// 定义布局属性
+interface Props {
+  title: string;
+  description?: string;
+}
+
+// 获取页面属性
+const { title, description = 'Wu Lab - Structural Biology Research Group' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | Wu Lab</title>
+
+    <!-- 预加载字体 - Outfit + DM Sans + Noto Sans SC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white text-gray-900 font-body antialiased">
+    <slot />
+  </body>
+</html>

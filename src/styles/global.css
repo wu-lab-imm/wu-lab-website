@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 全局样式 - 简洁学术风格 */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-y: scroll; /* 始终显示滚动条，防止页面内容变化时header偏移 */
+  }
+
+  body {
+    @apply font-body text-gray-900 antialiased;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold tracking-tight;
+  }
+}
+
+/* 自定义组件 */
+@layer components {
+  /* 渐变文字 */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-amber-700;
+  }
+
+  /* 按钮样式 */
+  .btn-primary {
+    @apply px-6 py-3 bg-gray-900 text-white font-medium tracking-wide
+           hover:bg-amber-600 transition-colors duration-300;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 border border-gray-300 text-gray-700 font-medium tracking-wide
+           hover:border-gray-900 hover:text-gray-900 transition-colors duration-300;
+  }
+
+  /* 卡片悬停效果 */
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    @apply -translate-y-1 shadow-xl;
+  }
+}
+
+/* 滚动动画 */
+@layer utilities {
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 页面加载动画 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* 选中文本颜色 */
+::selection {
+  @apply bg-amber-100 text-gray-900;
+}

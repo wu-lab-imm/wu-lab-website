@@ -1,0 +1,140 @@
+---
+// Header 组件 - 导航栏 (简洁学术风格)
+const base = '/wu-lab-website';
+
+// 导航链接配置 - 全部英文
+const navLinks = [
+  { href: base + '/', label: 'Home' },
+  { href: base + '/research', label: 'Research' },
+  { href: base + '/people', label: 'People' },
+  { href: base + '/publications', label: 'Publications' },
+  { href: base + '/news', label: 'News' },
+  { href: base + '/join', label: 'Join' },
+];
+
+// 获取当前路径
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100" id="main-header">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <!-- Logo - Artistic text with glow effect -->
+    <a href={base + '/'} class="flex items-center">
+      <span class="wu-lab-logo">
+        <span class="wu-lab-main">Wu Lab</span>
+        <span class="wu-lab-divider"> · </span>
+        <span class="wu-lab-sub">Structural Biology</span>
+      </span>
+    </a>
+
+    <style>
+      .wu-lab-logo {
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        position: relative;
+        /* 外部柔和发光效果 - 浅蓝绿色 */
+        filter: drop-shadow(0 0 10px rgba(167, 243, 208, 0.35))
+                drop-shadow(0 0 20px rgba(167, 243, 208, 0.18));
+      }
+
+      .wu-lab-main {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        color: #171717;
+        /* 内部立体感 - 微妙渐变 */
+        background: linear-gradient(180deg, #262626 0%, #171717 50%, #404040 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .wu-lab-divider {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: #737373;
+        opacity: 0.5;
+        margin: 0 0.05em;
+      }
+
+      .wu-lab-sub {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #525252;
+        /* 微妙渐变 */
+        background: linear-gradient(180deg, #525252 0%, #404040 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* 悬停时增强发光效果 */
+      .wu-lab-logo:hover {
+        filter: drop-shadow(0 0 14px rgba(167, 243, 208, 0.5))
+                drop-shadow(0 0 28px rgba(167, 243, 208, 0.28));
+      }
+    </style>
+
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center space-x-1">
+      {navLinks.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'px-3 py-1.5 text-sm font-medium tracking-wider transition-colors duration-200',
+            currentPath === item.href || (item.href !== base + '/' && currentPath.startsWith(item.href))
+              ? 'text-gray-900'
+              : 'text-gray-500 hover:text-gray-900'
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      class="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+      id="mobile-menu-btn"
+      aria-label="Toggle menu"
+    >
+      <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="md:hidden hidden bg-white border-t border-gray-100" id="mobile-menu">
+    <div class="px-6 py-4 space-y-1">
+      {navLinks.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'block px-4 py-3 text-base font-medium transition-colors',
+            currentPath === item.href
+              ? 'text-gray-900 bg-gray-50'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<script>
+  // 移动端菜单切换
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

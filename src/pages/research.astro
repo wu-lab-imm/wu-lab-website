@@ -1,0 +1,94 @@
+---
+// 研究方向页 - research.astro
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const base = '/wu-lab-website';
+
+// 获取所有研究项目
+const allResearch = await getCollection('research');
+const researchItems = allResearch
+  .filter(item => item.slug === 'neuroscience' || item.slug === 'glycan')
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout title="研究方向" description="了解Wu Lab的研究方向，包括代谢类疾病、神经系统疾病、氧化酶和激酶研究">
+  <Header />
+
+  <main>
+    <!-- 页面标题 -->
+    <section class="bg-white pt-28 pb-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          研究方向 <span class="text-gray-500">| Research</span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+          运用冷冻电镜和X射线晶体衍射等技术手段，阐明疾病相关蛋白的工作机制与药物作用机理。
+        </p>
+      </div>
+    </section>
+
+    <!-- 研究项目详细列表 -->
+    <section class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="space-y-12">
+          {researchItems.map((item, index) => (
+            <article id={item.slug} class="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 group">
+              <div class="grid grid-cols-1 lg:grid-cols-2">
+                <!-- 图片区域 -->
+                <div class:list={["relative bg-gray-100 flex items-center justify-center", item.slug === 'glycan' ? "lg:order-2" : "lg:order-1"]}>
+                  {item.data.image ? (
+                    <img
+                      src={base + item.data.image}
+                      alt={item.data.title}
+                      class="w-full h-auto max-h-[500px] object-contain"
+                    />
+                  ) : (
+                    <div class="w-full items-center justify-center h-64 flex">
+                      <span class="text-8xl">{item.data.icon}</span>
+                    </div>
+                  )}
+                </div>
+
+                <!-- 内容区域 -->
+                <div class:list={["p-6 lg:p-8 flex flex-col justify-center", item.slug === 'glycan' ? "lg:order-1" : "lg:order-2"]}>
+                  <h2 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4 group-hover:text-amber-600 transition-colors duration-300">
+                    {item.data.title}
+                  </h2>
+                  {item.data.titleEn && (
+                    <p class="text-xl text-gray-500 font-medium mb-6">{item.data.titleEn}</p>
+                  )}
+                  <div class="prose prose-gray max-w-none">
+                    <p class="text-gray-600 leading-relaxed text-lg">
+                      {item.data.description}
+                    </p>
+                  </div>
+
+                  <!-- 相关论文链接 -->
+                  {item.data.relatedPublications && (
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                      <a
+                        href={base + '/publications'}
+                        class="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700 transition-all duration-300 group/link"
+                      >
+                        <span>查看相关论文</span>
+                        <svg class="w-5 h-5 ml-2 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
