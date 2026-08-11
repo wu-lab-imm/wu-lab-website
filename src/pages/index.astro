@@ -30,7 +30,7 @@ const detailLink = (news: typeof allNews[number]) => {
           <div><span class="text-xs font-bold uppercase tracking-[.2em] text-indigo-600">Featured news</span><h2 class="mt-2 text-3xl font-bold text-slate-950 md:text-4xl">实验室最新动态</h2><p class="mt-3 text-slate-500">后台勾选“首页推荐”的新闻会显示在这里</p></div>
           <a href={`${base}/news`} class="font-semibold text-indigo-600 hover:text-indigo-800">查看全部新闻 →</a>
         </div>
-        {homeNews.length ? <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">{homeNews.map((news) => <NewsCard date={news.data.date.toISOString().split('T')[0]} title={news.data.title} summary={news.data.summary} image={news.data.image || news.data.images?.[0]} category={news.data.category} link={detailLink(news)} />)}</div> : <div class="rounded-2xl border border-dashed border-slate-300 p-10 text-center text-slate-500">暂无新闻</div>}
+        {homeNews.length ? <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">{homeNews.map((news) => <NewsCard date={news.data.date.toISOString().split('T')[0]} title={news.data.title} summary={news.data.summary} image={news.data.image || news.data.images?.[0]} category={news.data.category} link={detailLink(news)} priority />)}</div> : <div class="rounded-2xl border border-dashed border-slate-300 p-10 text-center text-slate-500">暂无新闻</div>}
       </div>
     </section>
   </main>

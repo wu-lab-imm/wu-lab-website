@@ -11,9 +11,10 @@ interface Props {
   category?: string;
   lang?: 'zh' | 'en';
   imageDisplay?: 'card' | 'wide' | 'detail';
+  priority?: boolean;
 }
 
-const { date, title, summary, image, images, link, category, lang = 'zh', imageDisplay = 'card' } = Astro.props;
+const { date, title, summary, image, images, link, category, lang = 'zh', imageDisplay = 'card', priority = false } = Astro.props;
 const canZoom = imageDisplay === 'detail' || (imageDisplay === 'wide' && !link);
 const showFullImage = category === 'publication';
 const imageContainerClass = showFullImage
@@ -47,7 +48,7 @@ const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 // 构建图片数组
 const imageList = images || (image ? [image] : []);
 const hasMultipleImages = imageList.length > 1;
-const thumbnailFor = (path: string) => imageDisplay === 'card' && path.includes('/images/news/')
+const thumbnailFor = (path: string) => (imageDisplay === 'card' || imageDisplay === 'wide') && path.includes('/images/news/')
   ? path.replace(/\.(?:jpe?g|png|webp)$/i, '.thumb.webp')
   : path;
 const displayImageList = imageList.map(thumbnailFor);
@@ -74,7 +75,9 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
               class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
               data-carousel-index={index}
               data-full-image={canZoom ? fullImageList[index] : undefined}
-              loading="lazy"
+              data-clear-image={imageDisplay === 'wide' ? imageList[index] : undefined}
+              loading={priority && index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={priority && index === 0 ? 'high' : 'auto'}
               decoding="async"
             />
           ))}
@@ -84,6 +87,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
             class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
             data-carousel-index="clone"
             data-full-image={canZoom ? fullImageList[0] : undefined}
+            data-clear-image={imageDisplay === 'wide' ? imageList[0] : undefined}
             loading="lazy"
             decoding="async"
           />
@@ -179,7 +183,9 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
               class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
               data-carousel-index={index}
               data-full-image={canZoom ? fullImageList[index] : undefined}
-              loading="lazy"
+              data-clear-image={imageDisplay === 'wide' ? imageList[index] : undefined}
+              loading={priority && index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={priority && index === 0 ? 'high' : 'auto'}
               decoding="async"
             />
           ))}
@@ -189,6 +195,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
             class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
             data-carousel-index="clone"
             data-full-image={canZoom ? fullImageList[0] : undefined}
+            data-clear-image={imageDisplay === 'wide' ? imageList[0] : undefined}
             loading="lazy"
             decoding="async"
           />
@@ -265,8 +272,39 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
 )}
 
 <!-- 轮播脚本 -->
-<script define:vars={{ carouselId, imageListLength: imageList.length, enableZoom: canZoom }}>
+<script define:vars={{ carouselId, imageListLength: imageList.length, enableZoom: canZoom, enableProgressive: imageDisplay === 'wide' }}>
   const zoomContainer = document.querySelector(`[data-carousel="${carouselId}"]`);
+  if (enableProgressive && zoomContainer) {
+    const loadClearImage = (image) => {
+      const clearSrc = image.dataset.clearImage;
+      if (!clearSrc || image.dataset.clearLoading) return;
+      image.dataset.clearLoading = 'true';
+      const clearImage = new Image();
+      clearImage.decoding = 'async';
+      clearImage.fetchPriority = image.fetchPriority === 'high' ? 'high' : 'auto';
+      clearImage.src = clearSrc;
+      clearImage.onload = async () => {
+        try { await clearImage.decode(); } catch {}
+        image.src = clearSrc;
+        image.removeAttribute('data-clear-image');
+        image.removeAttribute('data-clear-loading');
+      };
+      clearImage.onerror = () => image.removeAttribute('data-clear-loading');
+    };
+    const progressiveImages = zoomContainer.querySelectorAll('[data-clear-image]');
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          loadClearImage(entry.target);
+        });
+      }, { rootMargin: '500px' });
+      progressiveImages.forEach((image) => observer.observe(image));
+    } else {
+      progressiveImages.forEach(loadClearImage);
+    }
+  }
   if (enableZoom && zoomContainer) {
     zoomContainer.querySelectorAll('[data-full-image]').forEach((image) => {
       image.addEventListener('click', (event) => {
