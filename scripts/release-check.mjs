@@ -90,7 +90,10 @@ for (const file of imageFiles) {
   if (info.size > 4 * 1024 * 1024) {
     warnings.push(`大图片 ${(info.size / 1024 / 1024).toFixed(1)} MB：public/${publicPath}`);
   }
-  if (!referencedImages.has(publicPath)) orphanCount += 1;
+  if (!referencedImages.has(publicPath)) {
+    orphanCount += 1;
+    warnings.push(`未引用图片：public/${publicPath}`);
+  }
 }
 
 console.log(`发布检查：${htmlFiles.length} 个页面，${referencedImages.size} 个内容图片引用。`);

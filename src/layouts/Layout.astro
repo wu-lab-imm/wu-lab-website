@@ -24,13 +24,7 @@ const faviconHref = `${base}/favicon.svg`;
     <link rel="icon" type="image/svg+xml" href={faviconHref} />
     <title>{title} | Wu Lab</title>
 
-    <!-- 预加载字体 - Outfit + DM Sans + Noto Sans SC -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- 使用本机系统字体，避免外部字体服务阻塞首次渲染。 -->
   </head>
   <body class="bg-white text-gray-900 font-body antialiased">
     <slot />

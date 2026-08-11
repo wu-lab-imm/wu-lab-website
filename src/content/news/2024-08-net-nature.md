@@ -20,7 +20,7 @@ bodyEn: |-
   ## Significance
 
   These findings advance the mechanistic understanding of NET and provide a structural framework for therapeutic design targeting norepinephrine transport.
-image: 'https://www.imm.ac.cn/images/2024-08/9f560e9324ba4e40be97c8a74a49d8a8.png'
+image: '/wu-lab-website/images/news/nature-net-2024.webp'
 category: publication
 featured: true
 ---

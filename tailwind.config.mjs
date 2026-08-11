@@ -38,11 +38,12 @@ export default {
         },
       },
       fontFamily: {
-        // 使用现代无衬线字体
-        'display': ['Outfit', 'sans-serif'],
-        'body': ['DM Sans', 'sans-serif'],
-        'sans': ['DM Sans', 'Noto Sans SC', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'monospace'],
+        // 全部使用操作系统自带字体，避免 Google Fonts 在部分网络下
+        // 阻塞页面首次显示。中英文在 Windows、macOS 和移动端均有回退。
+        'display': ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Arial', 'sans-serif'],
+        'body': ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Arial', 'sans-serif'],
+        'sans': ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Arial', 'sans-serif'],
+        'mono': ['ui-monospace', 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'monospace'],
       },
       animation: {
         'fade-in': 'fadeIn 0.6s ease-out forwards',
