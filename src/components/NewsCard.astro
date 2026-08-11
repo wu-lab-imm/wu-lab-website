@@ -402,17 +402,46 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
       });
     });
 
-    // 自动轮播 - 每5秒切换
-    let autoPlayInterval = setInterval(nextImage, 5000);
-
-    // 鼠标悬停时暂停自动轮播
-    container.addEventListener('mouseenter', () => {
+    // 只让屏幕内且处于前台的轮播运行，避免长时间打开页面后
+    // 多个后台定时器在 Safari 恢复时集中执行。
+    let autoPlayInterval;
+    let carouselVisible = false;
+    let pointerInside = false;
+    const stopAutoPlay = () => {
+      if (!autoPlayInterval) return;
       clearInterval(autoPlayInterval);
-    });
-
-    container.addEventListener('mouseleave', () => {
+      autoPlayInterval = undefined;
+    };
+    const startAutoPlay = () => {
+      if (autoPlayInterval || !carouselVisible || pointerInside || document.hidden) return;
       autoPlayInterval = setInterval(nextImage, 5000);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const carouselObserver = new IntersectionObserver(([entry]) => {
+        carouselVisible = entry.isIntersecting;
+        if (carouselVisible) startAutoPlay();
+        else stopAutoPlay();
+      }, { threshold: 0.1 });
+      carouselObserver.observe(container);
+    } else {
+      carouselVisible = true;
+      startAutoPlay();
+    }
+
+    container.addEventListener('mouseenter', () => {
+      pointerInside = true;
+      stopAutoPlay();
     });
+    container.addEventListener('mouseleave', () => {
+      pointerInside = false;
+      startAutoPlay();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAutoPlay();
+      else startAutoPlay();
+    });
+    window.addEventListener('pagehide', stopAutoPlay, { once: true });
   }
 </script>
 
