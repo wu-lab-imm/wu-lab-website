@@ -7,6 +7,6 @@ startYear: 2023
 graduationYear: 2026
 position: 北京大学药学院
 positionEn: Peking University School of Pharmaceutical Sciences
-photo: /wu-lab-website/images/members/ljm-1786372378994.jpg
+photo: /wu-lab-website/images/members/ljm-1786372378994.webp
 ---
 【加入时间】2023年

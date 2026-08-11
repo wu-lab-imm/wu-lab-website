@@ -40,6 +40,19 @@ for (const file of sourceFiles) {
   for (const match of text.matchAll(/\/wu-lab-website\/(images\/[A-Za-z0-9._~!&'()*+,;=:@%/-]+\.(?:avif|gif|jpe?g|png|svg|webp))/gi)) {
     referencedImages.add(match[1]);
   }
+  for (const match of text.matchAll(/\$\{base\}\/(images\/[A-Za-z0-9._~!&'()*+,;=:@%/-]+\.(?:avif|gif|jpe?g|png|svg|webp))/gi)) {
+    referencedImages.add(match[1]);
+  }
+}
+
+// News cards use generated 800 px thumbnails, detail pages use the larger
+// image, and a high-resolution version is available on demand. Treat both
+// derived variants as required public assets too.
+for (const image of [...referencedImages]) {
+  if (image.startsWith('images/news/') && /\.(?:jpe?g|png|webp)$/i.test(image)) {
+    referencedImages.add(image.replace(/\.(?:jpe?g|png|webp)$/i, '.thumb.webp'));
+    referencedImages.add(image.replace(/\.(?:jpe?g|png|webp)$/i, '.full.webp'));
+  }
 }
 
 for (const image of referencedImages) {

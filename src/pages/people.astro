@@ -81,6 +81,8 @@ const piCareer = (pi[0]?.data.career || []).map((item) => {
                     src={pi[0].data.photo || "https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png"}
                     alt={pi[0].data.name}
                     class="relative w-full h-auto object-contain rounded-2xl shadow-lg"
+                    loading="eager"
+                    decoding="async"
                   />
                 </div>
                 <!-- 照片下方联系信息 -->

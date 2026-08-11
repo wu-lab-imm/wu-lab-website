@@ -11,7 +11,7 @@ descriptionEn: >-
   working mechanisms of protein machines and reveal how therapeutic molecules
   modulate disease-related targets.
 icon: "\U0001F9EC"
-image: /wu-lab-website/images/research/research-1.png
+image: /wu-lab-website/images/research/research-1.webp
 order: 1
 shortName: 结构药理
 shortNameEn: Structural Pharmacology

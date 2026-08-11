@@ -2,7 +2,7 @@
 name: 周俊
 nameEn: Jun Zhou
 role: Master
-photo: /wu-lab-website/images/members/members-1786371663056-1786371663056.jpg
+photo: /wu-lab-website/images/members/members-1786371663056-1786371663056.webp
 researchInterest: >-
   膜嵌入代谢机器和转运系统的结构与机制生物学。
 

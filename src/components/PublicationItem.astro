@@ -77,7 +77,7 @@ const journalBadgeColor = journalColors[journal] || 'bg-stone-600 text-white';
   'relative bg-white p-6 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 border-l-4',
   isCNS ? 'border-l-amber-500 bg-stone-50' : 'border-l-stone-200'
 ]}>
-  {image && <div class="mb-5 flex max-h-[32rem] items-start justify-center overflow-hidden rounded-xl border border-stone-100 bg-stone-50"><img src={image} alt={lang === 'en' ? `Figure for ${title}` : `${title} 论文配图`} class="max-h-[32rem] w-full object-contain object-top" loading="lazy" /></div>}
+  {image && <div class="mb-5 flex max-h-[32rem] items-start justify-center overflow-hidden rounded-xl border border-stone-100 bg-stone-50"><img src={image} alt={lang === 'en' ? `Figure for ${title}` : `${title} 论文配图`} class="max-h-[32rem] w-full object-contain object-top" loading="lazy" decoding="async" /></div>}
   <!-- 期刊徽章 -->
   <div class="flex items-center gap-3 mb-3">
     <span class:list={['px-2.5 py-1 text-xs font-medium tracking-wider rounded-sm', journalBadgeColor]}>

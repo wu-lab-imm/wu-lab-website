@@ -151,7 +151,7 @@
     "titleCn": "去甲肾上腺素转运体的底物结合和抑制机制",
     "abstractCn": "本研究解析了人源去甲肾上腺素转运体在无底物、底物类似物 MIBG 结合及抑制剂 radafaxine 结合状态下的冷冻电镜结构，揭示了底物识别、向内开放构象及正构抑制机制，为理解 NET 功能和相关药物设计提供了结构基础。",
     "abstractEn": "Norepinephrine transporter (NET; encoded by SLC6A2) reuptakes the majority of the released noradrenaline back to the presynaptic terminals, thereby affecting the synaptic noradrenaline level1. Genetic mutations and dysregulation of NET are associated with a spectrum of neurological conditions in humans, making NET an important therapeutic target1. However, the structure and mechanism of NET remain unclear. Here we provide cryogenic electron microscopy structures of the human NET (hNET) in three functional states—the apo state, and in states bound to the substrate meta-iodobenzylguanidine (MIBG) or the orthosteric inhibitor radafaxine. These structures were captured in an inward-facing conformation, with a tightly sealed extracellular gate and an open intracellular gate. The substrate MIBG binds at the centre of hNET. Radafaxine also occupies the substrate-binding site and might block the structural transition of hNET for inhibition. These structures provide insights into the mechanism of substrate recognition and orthosteric inhibition of hNET.",
-    "image": "/wu-lab-website/images/publication-1.png",
+    "image": "/wu-lab-website/images/publication-1.webp",
     "authors": [
       "Wenming Ji#",
       "Anran Miao#",

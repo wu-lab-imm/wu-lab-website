@@ -45,6 +45,8 @@ const imageUrl = (path: string) => path.startsWith(base + '/') ? path : path.sta
                       src={imageUrl(item.data.image)}
                       alt={item.data.title}
                       class="w-full h-auto max-h-[500px] object-contain"
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div class="w-full items-center justify-center h-64 flex">

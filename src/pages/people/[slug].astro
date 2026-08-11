@@ -30,7 +30,7 @@ const photo = person.data.photo || (person.data.role === 'PI' ? piFallbackPhoto 
       <div class="mt-7 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
         <div class="grid md:grid-cols-[320px_1fr]">
           <div class="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8">
-            <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-white shadow-lg"><img src={photo} alt={person.data.name} class:list={['h-full w-full', person.data.photo || person.data.role === 'PI' ? 'object-cover object-top' : 'object-contain p-16']} /></div>
+            <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-white shadow-lg"><img src={photo} alt={person.data.name} class:list={['h-full w-full', person.data.photo || person.data.role === 'PI' ? 'object-cover object-top' : 'object-contain p-16']} loading="eager" decoding="async" /></div>
             <div class="mt-6 space-y-2 text-sm text-slate-600">
               {person.data.email && <a class="block text-indigo-600 hover:underline" href={`mailto:${person.data.email}`}>{person.data.email}</a>}
               {person.data.startYear && <p>加入课题组：{person.data.startYear}</p>}

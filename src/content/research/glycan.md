@@ -11,7 +11,7 @@ descriptionEn: >-
   resolution and uncover the physiological and pathological functions of
   glycosylation.
 icon: "\U0001F52E"
-image: /wu-lab-website/images/research/glycan-1.jpg
+image: /wu-lab-website/images/research/glycan-1.webp
 order: 2
 shortName: 糖链解码
 shortNameEn: Glycan Decoding

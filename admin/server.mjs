@@ -1,14 +1,17 @@
 import http from 'node:http';
+import { execFile } from 'node:child_process';
 import { readFile, readdir, writeFile, rename, mkdir } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
+import { promisify } from 'node:util';
 import matter from 'gray-matter';
 
 const root = resolve(import.meta.dirname, '..');
 const host = process.env.WULAB_ADMIN_HOST || '127.0.0.1';
 const port = Number(process.env.WULAB_ADMIN_PORT || 4323);
-// Base64 adds roughly 33% to the original image size, so allow enough request
-// room for the advertised 10 MB upload limit.
-const maxBody = 15 * 1024 * 1024;
+// A news upload contains a list thumbnail, a detail image, and an on-demand
+// high-resolution image. Base64 adds roughly 33%, so leave enough headroom for
+// the three already-compressed WebP variants in one local request.
+const maxBody = 28 * 1024 * 1024;
 const contentDirs = {
   people: join(root, 'src/content/people'),
   news: join(root, 'src/content/news'),
@@ -19,6 +22,21 @@ const joinFile = join(root, 'src/join.json');
 const archiveDir = join(root, 'admin/archive');
 const adminHtml = join(root, 'admin/index.html');
 const brandIcon = join(root, 'public/favicon.svg');
+const execFileAsync = promisify(execFile);
+const autoPublishEnabled = process.env.WULAB_AUTO_PUBLISH !== 'false';
+const publishDelayMs = Number(process.env.WULAB_PUBLISH_DELAY_MS || 30_000);
+const publishablePaths = ['src/content/', 'src/join.json', 'public/images/'];
+const publishState = {
+  enabled: autoPublishEnabled,
+  status: 'idle',
+  message: autoPublishEnabled ? '等待内容修改' : '自动发布已关闭',
+  scheduledAt: null,
+  lastPublishedAt: null,
+  lastCommit: null,
+};
+let publishTimer;
+let publishRunning = false;
+let publishQueued = false;
 
 const json = (res, status, value) => {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
@@ -30,7 +48,7 @@ async function body(req) {
   let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > maxBody) throw new Error('请求过大，单次最多 12 MB');
+    if (size > maxBody) throw new Error('优化后的图片数据仍然过大，请选择稍小的原图');
     chunks.push(chunk);
   }
   return JSON.parse(Buffer.concat(chunks).toString('utf8'));
@@ -72,6 +90,100 @@ async function listMarkdown(type) {
   }));
 }
 
+async function command(file, args) {
+  return execFileAsync(file, args, {
+    cwd: root,
+    timeout: 10 * 60 * 1000,
+    maxBuffer: 8 * 1024 * 1024,
+  });
+}
+
+function statusPath(line) {
+  const value = line.slice(3).trim();
+  return value.includes(' -> ') ? value.split(' -> ').at(-1) : value;
+}
+
+function isPublishablePath(path) {
+  return publishablePaths.some((allowed) => allowed.endsWith('/') ? path.startsWith(allowed) : path === allowed);
+}
+
+function publishError(error) {
+  const output = [error?.stderr, error?.stdout, error?.message].filter(Boolean).join('\n').trim();
+  return output.split('\n').filter(Boolean).slice(-3).join(' · ').slice(0, 500) || '自动发布失败';
+}
+
+function schedulePublish(reason = '内容已修改', delay = publishDelayMs) {
+  if (!autoPublishEnabled) return;
+  if (publishRunning) {
+    publishQueued = true;
+    publishState.message = '当前发布完成后继续处理新修改';
+    return;
+  }
+  clearTimeout(publishTimer);
+  publishState.status = 'scheduled';
+  publishState.message = `${reason}，等待自动检查与发布`;
+  publishState.scheduledAt = new Date(Date.now() + delay).toISOString();
+  publishTimer = setTimeout(() => void runPublish(), delay);
+}
+
+async function runPublish() {
+  if (!autoPublishEnabled || publishRunning) return;
+  clearTimeout(publishTimer);
+  publishTimer = undefined;
+  publishRunning = true;
+  publishState.status = 'checking';
+  publishState.message = '正在检查仓库与构建网站';
+  publishState.scheduledAt = null;
+  try {
+    const branch = (await command('git', ['branch', '--show-current'])).stdout.trim();
+    if (branch !== 'main') throw new Error(`自动发布仅允许 main 分支，当前为 ${branch || '未知分支'}`);
+
+    await command('git', ['fetch', 'origin', 'main']);
+    const counts = (await command('git', ['rev-list', '--left-right', '--count', 'origin/main...HEAD'])).stdout.trim().split(/\s+/).map(Number);
+    const [behind = 0] = counts;
+    if (behind > 0) throw new Error('GitHub 上存在服务器尚未同步的新提交，请维护者先检查并同步');
+
+    const lines = (await command('git', ['status', '--porcelain=v1', '--untracked-files=all'])).stdout.split('\n').filter(Boolean);
+    const unexpected = lines.map(statusPath).filter((path) => !isPublishablePath(path));
+    if (unexpected.length) throw new Error(`检测到程序或运维文件改动，已停止自动发布：${unexpected.slice(0, 4).join('、')}`);
+    if (!lines.length) {
+      publishState.status = 'idle';
+      publishState.message = '没有需要发布的新内容';
+      return;
+    }
+
+    await command('npm', ['run', 'release:check']);
+    await command('git', ['add', '--all', '--', ...publishablePaths]);
+    const staged = (await command('git', ['diff', '--cached', '--name-only'])).stdout.trim();
+    if (!staged) {
+      publishState.status = 'idle';
+      publishState.message = '没有需要提交的新内容';
+      return;
+    }
+
+    const now = new Date();
+    const stamp = now.toISOString().replace('T', ' ').slice(0, 16);
+    await command('git', ['commit', '-m', `Update website content (${stamp} UTC)`]);
+    publishState.status = 'publishing';
+    publishState.message = '构建通过，正在推送 GitHub';
+    await command('git', ['push', 'origin', 'main']);
+    publishState.lastCommit = (await command('git', ['rev-parse', '--short', 'HEAD'])).stdout.trim();
+    publishState.lastPublishedAt = new Date().toISOString();
+    publishState.status = 'success';
+    publishState.message = '已推送 GitHub，Pages 正在自动更新';
+  } catch (error) {
+    console.error('自动发布失败：', error);
+    publishState.status = 'error';
+    publishState.message = publishError(error);
+  } finally {
+    publishRunning = false;
+    if (publishQueued) {
+      publishQueued = false;
+      schedulePublish('发布期间检测到新修改', 5_000);
+    }
+  }
+}
+
 const peopleOrderBase = { PI: 100, ResearchAssistant: 200, Postdoc: 300, PhD: 400, Master: 500, Undergraduate: 600, Alumni: 700 };
 
 async function nextPeopleOrder(role, excludeId) {
@@ -85,6 +197,16 @@ async function nextPeopleOrder(role, excludeId) {
 }
 
 async function handleApi(req, res, url) {
+  if (req.method === 'GET' && url.pathname === '/api/publish-status') {
+    return json(res, 200, publishState);
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/publish') {
+    if (!autoPublishEnabled) return json(res, 409, { error: '服务器已关闭自动发布' });
+    schedulePublish('已请求立即发布', 0);
+    return json(res, 202, publishState);
+  }
+
   if (req.method === 'GET' && url.pathname === '/api/content') {
     const type = url.searchParams.get('type');
     if (type === 'publications') return json(res, 200, JSON.parse(await readFile(publicationsFile, 'utf8')));
@@ -97,6 +219,7 @@ async function handleApi(req, res, url) {
     const payload = await body(req);
     if (payload.type === 'join') {
       await atomicWrite(joinFile, `${JSON.stringify(payload.data, null, 2)}\n`);
+      schedulePublish('Join 页面已保存');
       return json(res, 200, { ok: true, data: payload.data });
     }
     if (payload.type === 'publications') {
@@ -118,6 +241,7 @@ async function handleApi(req, res, url) {
         }
       }
       await atomicWrite(publicationsFile, `${JSON.stringify(payload.items, null, 2)}\n`);
+      schedulePublish('论文内容已保存');
       return json(res, 200, { ok: true, items: payload.items });
     }
     if (!(payload.type in contentDirs)) throw new Error('未知内容类型');
@@ -152,6 +276,7 @@ async function handleApi(req, res, url) {
     if (payload.type === 'news' && typeof data.date === 'string') data.date = new Date(`${data.date}T00:00:00Z`);
     const output = matter.stringify(`${String(payload.body || '').trim()}\n`, data);
     await atomicWrite(join(contentDirs[payload.type], `${id}.md`), output);
+    schedulePublish('网站内容已保存');
     return json(res, 200, { ok: true, id, data, clearedIds });
   }
 
@@ -165,11 +290,13 @@ async function handleApi(req, res, url) {
       if (next.length === items.length) throw new Error('未找到要删除的论文');
       await atomicWrite(join(archiveDir, `publications-${stamp}.json`), `${JSON.stringify(items, null, 2)}\n`);
       await atomicWrite(publicationsFile, `${JSON.stringify(next, null, 2)}\n`);
+      schedulePublish('论文已删除');
       return json(res, 200, { ok: true });
     }
     if (!(payload.type in contentDirs)) throw new Error('该栏目不支持删除');
     const id = safeId(payload.id);
     await rename(join(contentDirs[payload.type], `${id}.md`), join(archiveDir, `${payload.type}-${id}-${stamp}.md`));
+    schedulePublish('内容已删除');
     return json(res, 200, { ok: true });
   }
 
@@ -192,6 +319,7 @@ async function handleApi(req, res, url) {
       const output = matter.stringify(`${String(person.body || '').trim()}\n`, person.data);
       await atomicWrite(join(contentDirs.people, `${person.id}.md`), output);
     }
+    schedulePublish('成员顺序已调整');
     return json(res, 200, { ok: true });
   }
 
@@ -207,8 +335,19 @@ async function handleApi(req, res, url) {
     await mkdir(directory, { recursive: true });
     // A unique path prevents browsers and the static preview from reusing the
     // previous portrait when a maintainer uploads a replacement with the same name.
-    const filename = `${stem}-${Date.now()}${extension}`;
+    const uniqueStem = `${stem}-${Date.now()}`;
+    const filename = `${uniqueStem}${extension}`;
     await atomicWrite(join(directory, filename), buffer);
+    if (kind === 'news' && payload.thumbnailData) {
+      const thumbnail = Buffer.from(String(payload.thumbnailData).replace(/^data:image\/[^;]+;base64,/, ''), 'base64');
+      if (!thumbnail.length || thumbnail.length > 2 * 1024 * 1024) throw new Error('新闻缩略图为空或超过 2 MB');
+      await atomicWrite(join(directory, `${uniqueStem}.thumb.webp`), thumbnail);
+    }
+    if (kind === 'news' && payload.fullImageData) {
+      const fullImage = Buffer.from(String(payload.fullImageData).replace(/^data:image\/[^;]+;base64,/, ''), 'base64');
+      if (!fullImage.length || fullImage.length > 8 * 1024 * 1024) throw new Error('新闻高清图为空或超过 8 MB');
+      await atomicWrite(join(directory, `${uniqueStem}.full.webp`), fullImage);
+    }
     return json(res, 200, { ok: true, path: `/wu-lab-website/images/${kind}/${filename}` });
   }
 

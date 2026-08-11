@@ -66,6 +66,8 @@ const positionLabel = isAlumni ? person.data.positionEn : person.data.positionEn
                 src={photo}
                 alt={displayName}
                 class:list={['h-full w-full', person.data.photo || isPi ? 'object-cover object-top' : 'object-contain p-16']}
+                loading="eager"
+                decoding="async"
               />
             </div>
 
