@@ -1,18 +1,49 @@
 ---
-name: "吴惊香"
-nameEn: "Jingxiang Wu"
-role: "PI"
-email: "wujingxiang@imm.ac.cn"
-researchInterest: "Contact wujingxiang@imm.ac.cn"
-website: "https://www.imm.ac.cn/kydw/yjyzzkyg/3f98f3f133274215a123683f25ed2610.htm"
-order: 1
-affiliation: "中国医学科学院药物研究所"
-position: "研究员，博士生导师"
-appointmentDate: "2022-02-21"
-subjectFields: ["药学", "药理学"]
-startYear: 2022
----
+name: 吴惊香
+nameEn: Jing-Xiang Wu
+role: PI
+email: wujingxiang@imm.ac.cn
+bio: >-
+  长期从事疾病相关药物靶点蛋白的结构药理学研究，并基于结构研发药物。解析了神经系统疾病靶标——去甲肾上腺素转运体NET底物识别机制和抗抑郁药瑞达法辛药物作用机制；确定了代谢门控药靶KATP的组装模式，阐述了磺酰脲类和格列奈类药物的降糖机制；揭示了甲状腺氧化酶和脑特异激酶的调控机制；为相应靶标的药物研发提供了结构基础。承担6项国家和省部级科研课题，在Nature、Cell等杂志发表论文20余篇。
+bioEn: >-
+  The Wu Lab investigates the structural pharmacology of disease-related drug
+  targets and develops structure-guided therapeutic strategies. Our work has
+  revealed substrate recognition and antidepressant inhibition of the
+  norepinephrine transporter, assembly and drug modulation of KATP channels, and
+  regulatory mechanisms of thyroid oxidases and brain-specific kinases.
+researchInterestEn: >-
+  Structural pharmacology of disease-related targets and structure-guided drug
+  discovery
+profileEn: >-
+  Jing-Xiang Wu is a Principal Investigator and doctoral supervisor at the
+  Institute of Materia Medica, Chinese Academy of Medical Sciences and Peking
+  Union Medical College. She received her B.S. from Hunan Normal University in
+  2009 and her Ph.D. in Biology from Tsinghua University in 2016.
 
+
+  Her research combines cryo-electron microscopy and X-ray crystallography with
+  biochemistry, enzyme kinetics, cell biology, and electrophysiology to
+  understand the assembly, function, disease mechanisms, and pharmacology of
+  biologically important protein machines.
+website: 'https://www.imm.ac.cn/kydw/yjyzzkyg/3f98f3f133274215a123683f25ed2610.htm'
+websiteImm: 'https://www.imm.ac.cn/kydw/yjyzzkyg/3f98f3f133274215a123683f25ed2610.htm'
+websitePumc: 'https://yzbss.pumc.edu.cn/basicinfo/tutorinfo/tutordetail/J2022070004'
+order: 1
+affiliation: 中国医学科学院药物研究所
+position: 研究员
+advisorCategory: 博士生导师
+department: 天然药物活性物质与功能国家重点实验室
+career:
+  - 2022 至今 | 中国医学科学院药物研究所 · 研究员/博士生导师
+  - 2016 - 2022 | 北京大学未来技术学院 · 博士后
+  - 2009 - 2016 | 清华大学 · 博士
+appointmentDate: '2022-02-21'
+subjectFields:
+  - 药学
+  - 药理学
+startYear: 2022
+photo: /wu-lab-website/images/members/2026-08-11-01-22-36-1786382560239.webp
+---
 ## 个人简介
 
 吴惊香，研究员，博士生导师。2005年考入湖南师范大学生物学专业，2009年获得学士学位。2009-2016年在清华大学生物学专业攻读博士学位，主要研究疾病相关蛋白的作用机制。

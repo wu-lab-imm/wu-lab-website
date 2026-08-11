@@ -1,29 +1,39 @@
 ---
 // Header 组件 - 导航栏 (简洁学术风格)
-const base = '/wu-lab-website';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+interface Props { lang?: 'zh' | 'en' }
+const { lang = 'zh' } = Astro.props;
+const prefix = lang === 'en' ? `${base}/en` : base;
 
-// 导航链接配置 - 全部英文
 const navLinks = [
-  { href: base + '/', label: 'Home' },
-  { href: base + '/research', label: 'Research' },
-  { href: base + '/people', label: 'People' },
-  { href: base + '/publications', label: 'Publications' },
-  { href: base + '/news', label: 'News' },
-  { href: base + '/join', label: 'Join' },
-];
+  { path: '', zh: '首页', en: 'Home' },
+  { path: '/research', zh: '研究方向', en: 'Research' },
+  { path: '/people', zh: '团队成员', en: 'People' },
+  { path: '/publications', zh: '研究成果', en: 'Publications' },
+  { path: '/news', zh: '实验室动态', en: 'News' },
+  { path: '/join', zh: '加入我们', en: 'Join Us' },
+].map((item) => ({ href: `${prefix}${item.path || '/'}`, label: item[lang] }));
 
-// 获取当前路径
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.pathname.replace(/\/$/, '');
+const basePath = base.replace(/\/$/, '');
+const relativePath = lang === 'en'
+  ? currentPath.replace(`${basePath}/en`, '') || '/'
+  : currentPath.replace(basePath, '') || '/';
+const languageHref = lang === 'en'
+  ? `${base}${relativePath === '/' ? '/' : relativePath}`
+  : `${base}/en${relativePath === '/' ? '/' : relativePath}`;
+const homeHref = `${prefix}/`;
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100" id="main-header">
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
     <!-- Logo - Artistic text with glow effect -->
-    <a href={base + '/'} class="flex items-center">
+    <a href={homeHref} class="flex items-center gap-3" aria-label={lang === 'en' ? 'Wu Lab home' : 'Wu Lab 首页'}>
+      <img src={`${base}/favicon.svg`} width="38" height="38" alt="" class="rounded-xl shadow-sm" />
       <span class="wu-lab-logo">
         <span class="wu-lab-main">Wu Lab</span>
         <span class="wu-lab-divider"> · </span>
-        <span class="wu-lab-sub">Structural Biology</span>
+        <span class="wu-lab-sub">Structure & Glycobiology</span>
       </span>
     </a>
 
@@ -88,7 +98,7 @@ const currentPath = Astro.url.pathname;
           href={item.href}
           class:list={[
             'px-3 py-1.5 text-sm font-medium tracking-wider transition-colors duration-200',
-            currentPath === item.href || (item.href !== base + '/' && currentPath.startsWith(item.href))
+            currentPath === item.href.replace(/\/$/, '') || (item.href !== homeHref && currentPath.startsWith(item.href))
               ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
           ]}
@@ -96,6 +106,7 @@ const currentPath = Astro.url.pathname;
           {item.label}
         </a>
       ))}
+      <a href={languageHref} class="ml-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100">{lang === 'en' ? '中文' : 'EN'}</a>
     </div>
 
     <!-- Mobile Menu Button -->
@@ -118,7 +129,7 @@ const currentPath = Astro.url.pathname;
           href={item.href}
           class:list={[
             'block px-4 py-3 text-base font-medium transition-colors',
-            currentPath === item.href
+            currentPath === item.href.replace(/\/$/, '')
               ? 'text-gray-900 bg-gray-50'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
           ]}
@@ -126,6 +137,7 @@ const currentPath = Astro.url.pathname;
           {item.label}
         </a>
       ))}
+      <a href={languageHref} class="block px-4 py-3 text-base font-bold text-indigo-700">{lang === 'en' ? '切换到中文' : 'English'}</a>
     </div>
   </div>
 </header>

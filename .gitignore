@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+.astro/
 
 # Environment files
 .env
@@ -28,3 +29,6 @@ coverage/
 # Temporary files
 *.tmp
 .cache/
+
+# Local content-management backups (not part of the public website)
+admin/archive/

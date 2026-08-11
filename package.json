@@ -5,8 +5,10 @@
   "description": "吴惊香课题组官方网站 - 中国医学科学院药物研究所",
   "scripts": {
     "dev": "astro dev",
+    "admin": "node admin/server.mjs",
     "start": "astro dev",
     "build": "astro check && astro build",
+    "release:check": "npm run build && node scripts/release-check.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -14,6 +16,7 @@
     "@astrojs/check": "^0.9.0",
     "@astrojs/tailwind": "^5.1.0",
     "astro": "^4.15.0",
+    "gray-matter": "^4.0.3",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.6.0"
   },

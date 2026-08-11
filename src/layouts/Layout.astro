@@ -6,19 +6,22 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  lang?: 'zh' | 'en';
 }
 
 // 获取页面属性
-const { title, description = 'Wu Lab - Structural Biology Research Group' } = Astro.props;
+const { title, description = 'Wu Lab - Structural Biology Research Group', lang = 'zh' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const faviconHref = `${base}/favicon.svg`;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang === 'en' ? 'en' : 'zh-CN'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={faviconHref} />
     <title>{title} | Wu Lab</title>
 
     <!-- 预加载字体 - Outfit + DM Sans + Noto Sans SC -->

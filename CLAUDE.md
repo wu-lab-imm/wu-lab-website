@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working on code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-Wu Lab Website - 吴惊香课题组官方网站，中国医学科学院药物研究所。使用 Astro + Tailwind CSS 构建的学术实验室网站。
+Wu Lab Website - 吴惊香课题组官方网站，中国医学科学院药物研究所。使用 Astro + Tailwind CSS 构建的学术实验室网站，支持中英文国际化。
 
 ## Common Commands
 
@@ -15,87 +15,87 @@ npm install
 # Start development server
 npm run dev
 
-# Build for production
+# Build for production (includes type checking)
 npm run build
 
 # Preview production build
 npm run preview
+
+# Type check
+npx astro check
 ```
 
 ## Tech Stack
 
-- **Astro** - Static site generator
-- **Tailwind CSS** - Styling
-- **TypeScript** - Type safety
+- **Astro** - Static site generator (v4.15+)
+- **Tailwind CSS** - Styling (v3.4+)
+- **TypeScript** - Type safety with strict mode
+- **i18n** - Built-in Astro internationalization (zh/en)
 
 ## Architecture
 
+### Path Aliases
+```json
+{
+  "@/*": ["src/*"],
+  "@components/*": ["src/components/*"],
+  "@layouts/*": ["src/layouts/*"]
+}
+```
+
 ### Pages
-- `/` - Home (Hero section only)
-- `/research` - Research areas
+- `/` - Home (Hero section)
+- `/research` - Research areas (5 projects)
 - `/people` - Team members
 - `/publications` - Publications
 - `/news` - News
 - `/join` - Join the lab
 
-### Content Collections
-- `src/content/people/` - Team members (Markdown with frontmatter)
-- `src/content/news/` - News items
-- `src/content/research/` - Research projects
-- `src/content/publications/publications.json` - Publications data
+### Content Collections (`src/content/`)
+- `people/` - Team members (Markdown with frontmatter)
+- `news/` - News items with date, summary, optional images
+- `research/` - Research projects with title, description, icon, order
+
+### Global Styles
+- `src/styles/global.css` - Imported in Layout.astro
+
+### Components
+- `src/components/Header.astro` - Fixed navigation
+- `src/components/Hero.astro` - Homepage hero section
+- `src/components/Footer.astro` - Site footer
+- `src/components/NewsCard.astro` - News card with hover effects
+- `src/components/PersonCard.astro` - Team member card
+- `src/components/PublicationItem.astro` - Publication entry
+- `src/components/ResearchCard.astro` - Research project card
+
+### Layouts
+- `src/layouts/Layout.astro` - Base layout with fonts (Outfit, DM Sans, Noto Sans SC), meta tags
 
 ### Design System
+- Primary: `#1e3a5f` (deep blue)
+- Secondary: `#3b82f6` (lighter blue)
+- Accent: `amber-600` (#d97706)
 - Fonts: Outfit (display), DM Sans (body), Noto Sans SC (Chinese)
-- Colors: White background, gray text, amber accent (#d97706)
-- Primary color: `#1e3a5f` (deep blue)
-- Secondary color: `#3b82f6` (lighter blue)
 
-## Key Files
-- `tailwind.config.mjs` - Theme configuration
-- `src/layouts/Layout.astro` - Base layout with fonts
-- `src/components/Header.astro` - Navigation (fixed position)
-- `src/components/Hero.astro` - Homepage hero section
-- `src/content/config.ts` - Content collection schemas
+## Image Guidelines
 
-## Important Notes
-
-- Header is fixed position (`fixed top-0`), so content sections need `pt-28` padding to avoid overlap
-- Page titles use white background with dark text (gray-900), consistent across all pages
-- Research page shows 2 projects: neuroscience and glycan decoding
-- Publications page uses inline card layout with Nature link and corresponding author email icon
-- All images in content should be placed in `public/images/` directory
-
-## Image Guidelines (图片使用规范)
-
-### Adding Member Photos (添加成员照片)
-
-1. **File Location**: Put images in `public/images/members/` directory (use English names)
-2. **Path Format**: Use `/wu-lab-website/images/members/filename.png` in frontmatter
-3. **File Extension**: Use lowercase `.png` or `.jpg` (NOT `.PNG` or `.JPG`)
-4. **Recommended Resolution**: At least 2000x2000 pixels for clear display
-
-Example in `src/content/people/xxx.md`:
-```yaml
-photo: "/wu-lab-website/images/members/filename.png"
-```
-
-### Common Issues & Solutions
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Broken image | Wrong path or missing file | Check path includes `/wu-lab-website/` prefix |
-| Broken image | Case sensitivity | Use lowercase `.png`, not `.PNG` |
-| Blurry image | Low resolution source | Provide higher resolution original (2000px+) |
-| Chinese path not working | Encoding issues | Use English path like `/images/members/` |
+### Member Photos
+- Location: `public/images/members/`
+- Path in frontmatter: `/wu-lab-website/images/members/filename.png`
+- Format: lowercase `.png` or `.jpg`
+- Resolution: 2000px+ recommended
 
 ### News Images
-- Put in `public/images/news/` directory
-- Path format in news markdown: `/wu-lab-website/images/news/...`
+- Location: `public/images/news/`
+- Path: `/wu-lab-website/images/news/...`
 
-## Key Components
+## i18n Notes
+- Default locale: `zh`
+- Available locales: `zh`, `en`
+- Configure in `astro.config.mjs` i18n section
 
-- `src/components/Header.astro` - Fixed navigation with logo, supports "Wu Lab · Structural Biology" styling with glow effects
-- `src/components/Hero.astro` - Homepage hero section with large typography
-- `src/components/NewsCard.astro` - News card component with hover effects
-- `src/pages/research.astro` - Research page with image cards, supports optional images via frontmatter
-- `src/pages/publications.astro` - Publications page with paper cards
+## Key Files
+- `astro.config.mjs` - Site config, base path (`/wu-lab-website`), i18n
+- `tailwind.config.mjs` - Theme colors, fonts, animations
+- `tsconfig.json` - Strict TypeScript, path aliases
+- `src/content/config.ts` - Content collection schemas

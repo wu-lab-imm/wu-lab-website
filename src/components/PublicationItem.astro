@@ -14,6 +14,12 @@ interface Props {
   isCNS?: boolean;
   isHighImpact?: boolean;
   labMembers?: string[];
+  titleCn?: string;
+  abstractCn?: string;
+  abstractEn?: string;
+  abstract?: string;
+  image?: string;
+  lang?: 'zh' | 'en';
 }
 
 const {
@@ -29,7 +35,16 @@ const {
   isCNS = false,
   isHighImpact = false,
   labMembers = []
+  ,titleCn
+  ,abstractCn
+  ,abstractEn
+  ,abstract
+  ,image
+  ,lang = 'zh'
 } = Astro.props;
+const legacyAbstractIsChinese = Boolean(abstract && /[\u3400-\u9fff]/.test(abstract));
+const chineseAbstract = abstractCn || (legacyAbstractIsChinese ? abstract : undefined);
+const englishAbstract = abstractEn || (!legacyAbstractIsChinese ? abstract : undefined);
 
 // 格式化作者列表，实验室成员名字加粗
 const formatAuthors = (authors: string[]) => {
@@ -62,6 +77,7 @@ const journalBadgeColor = journalColors[journal] || 'bg-stone-600 text-white';
   'relative bg-white p-6 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 border-l-4',
   isCNS ? 'border-l-amber-500 bg-stone-50' : 'border-l-stone-200'
 ]}>
+  {image && <div class="mb-5 flex max-h-[32rem] items-start justify-center overflow-hidden rounded-xl border border-stone-100 bg-stone-50"><img src={image} alt={lang === 'en' ? `Figure for ${title}` : `${title} 论文配图`} class="max-h-[32rem] w-full object-contain object-top" loading="lazy" /></div>}
   <!-- 期刊徽章 -->
   <div class="flex items-center gap-3 mb-3">
     <span class:list={['px-2.5 py-1 text-xs font-medium tracking-wider rounded-sm', journalBadgeColor]}>
@@ -84,6 +100,7 @@ const journalBadgeColor = journalColors[journal] || 'bg-stone-600 text-white';
   <h3 class="text-lg font-display font-semibold text-stone-900 mb-3 leading-snug hover:text-amber-700 transition-colors duration-300">
     {title}
   </h3>
+  {lang === 'zh' && titleCn && <p class="-mt-1 mb-3 text-sm font-medium text-stone-500">{titleCn}</p>}
 
   <!-- 作者列表 -->
   <div class="flex flex-wrap gap-x-2 gap-y-1 mb-3 text-sm">
@@ -103,6 +120,14 @@ const journalBadgeColor = journalColors[journal] || 'bg-stone-600 text-white';
     {volume && <span>, {volume}</span>}
     {pages && <span>, {pages}</span>}
   </p>
+  {(lang === 'zh' && chineseAbstract) && <section class="mb-4 rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3">
+    <p class="mb-1 text-xs font-bold tracking-wide text-indigo-700">中文摘要</p>
+    <p class="text-sm leading-7 text-stone-700">{chineseAbstract}</p>
+  </section>}
+  {englishAbstract && <section class="mb-5 border-l-2 border-slate-200 pl-4">
+    <p class="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">Abstract</p>
+    <p class="text-sm leading-7 text-stone-600">{englishAbstract}</p>
+  </section>}
 
   <!-- 操作链接 -->
   <div class="flex items-center gap-3 pt-3 border-t border-stone-100">

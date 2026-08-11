@@ -1,12 +1,29 @@
 ---
-title: "吴惊香课题组在Nature发表去甲肾上腺素转运体研究成果"
-date: 2024-08-14
-summary: "该研究解析了人源去甲肾上腺素转运体三个不同功能状态下的高分辨率结构，揭示了其底物识别及抑制作用机制。"
-image: "https://www.imm.ac.cn/images/2024-08/9f560e9324ba4e40be97c8a74a49d8a8.png"
-category: "publication"
+title: 吴惊香课题组在Nature发表去甲肾上腺素转运体研究成果
+titleEn: Wu Lab publishes the structural mechanism of the norepinephrine transporter in Nature
+date: 2024-08-14T00:00:00.000Z
+summary: 该研究解析了人源去甲肾上腺素转运体三个不同功能状态下的高分辨率结构，揭示了其底物识别及抑制作用机制。
+summaryEn: High-resolution structures of the human norepinephrine transporter in three functional states reveal the molecular basis of substrate recognition and inhibition.
+bodyEn: |-
+  On August 14, 2024, the Wu Lab at the Institute of Materia Medica, Chinese Academy of Medical Sciences and Peking Union Medical College, published “Substrate binding and inhibition mechanism of norepinephrine transporter” in Nature.
+
+  The study determined high-resolution structures of the human norepinephrine transporter (hNET), a key target in neurological disease, in three distinct functional states. These structures explain substrate recognition and inhibition and provide a foundation for structure-guided development of NET-targeting therapeutics.
+
+  ## Background
+
+  Norepinephrine is an essential neurotransmitter that regulates arousal and many physiological responses. Dysfunction of norepinephrine signaling is associated with sympathetic overactivation, attention-deficit/hyperactivity disorder, depression, and pheochromocytoma. NET terminates norepinephrine signaling by transporting released neurotransmitter back into presynaptic neurons and is an important imaging and therapeutic target.
+
+  ## Major findings
+
+  The substrate-free transporter adopts an inward-open conformation. The substrate analogue MIBG binds at the center of the substrate pocket, whereas radafaxine acts as an orthosteric inhibitor occupying the same site. Structural comparison of these states reveals the conformational changes that underlie transport and inhibition.
+
+  ## Significance
+
+  These findings advance the mechanistic understanding of NET and provide a structural framework for therapeutic design targeting norepinephrine transport.
+image: 'https://www.imm.ac.cn/images/2024-08/9f560e9324ba4e40be97c8a74a49d8a8.png'
+category: publication
 featured: true
 ---
-
 2024年8月14日，中国医学科学院药物研究所天然药物及核药基础与新药创制全国重点实验室吴惊香课题组在**Nature**在线发表题为"Substrate binding and inhibition mechanism of norepinephrine transporter"（去甲肾上腺素转运体的底物结合和抑制机制）的研究论文。
 
 该研究解析了关键的神经系统疾病靶标——人源去甲肾上腺素转运体（Norepinephrine transporter, hNET）三个不同功能状态下的高分辨率结构，揭示了其底物识别及抑制作用机制，为以NET为靶标的药物研发提供了结构基础。

@@ -9,6 +9,23 @@
     overflow-y: scroll; /* 始终显示滚动条，防止页面内容变化时header偏移 */
   }
 
+  /*
+   * Keep the visual scale comfortable on unscaled 1080p/2K/4K desktop displays.
+   * Tailwind's type, spacing, and max-width utilities use rem, so this enlarges
+   * the whole composition proportionally instead of changing text alone.
+   */
+  @media (min-width: 1600px) {
+    html {
+      font-size: 17px;
+    }
+  }
+
+  @media (min-width: 2400px) {
+    html {
+      font-size: 18px;
+    }
+  }
+
   body {
     @apply font-body text-gray-900 antialiased;
     min-height: 100vh;

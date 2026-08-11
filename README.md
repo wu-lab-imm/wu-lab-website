@@ -27,7 +27,7 @@ npm install
 npm run dev
 ```
 
-访问 http://localhost:4321 查看网站
+访问 http://localhost:4321/wu-lab-website/ 查看网站
 
 ### 构建生产版本
 
@@ -36,6 +36,12 @@ npm run build
 ```
 
 构建产物在 `dist/` 目录
+
+正式发布前运行完整检查：
+
+```bash
+npm run release:check
+```
 
 ### 预览生产版本
 
@@ -106,7 +112,11 @@ category: "publication"
 
 ## 部署
 
-推送到 GitHub 后，GitHub Actions 会自动构建并部署到 GitHub Pages。
+仓库当前连接 `wu-lab-imm/wu-lab-website`。推送到 `main` 后，GitHub Actions 会先执行完整发布检查，再自动部署到：
+
+https://wu-lab-imm.github.io/wu-lab-website/
+
+内容管理后台不会部署到 GitHub Pages，也不要将后台的 `4323` 端口开放到公网。详细维护与发布流程见 [MAINTENANCE.md](./MAINTENANCE.md)。
 
 ## 浏览器兼容性
 

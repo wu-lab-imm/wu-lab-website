@@ -23,6 +23,11 @@ const newsByMonth = sortedNews.reduce((acc, news) => {
 }, {} as Record<string, typeof sortedNews>);
 
 const months = Object.keys(newsByMonth);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const detailLink = (news: typeof sortedNews[number]) => {
+  const body = news.body.trim();
+  return body && body !== news.data.summary.trim() ? `${base}/news/${news.slug}` : undefined;
+};
 ---
 
 <Layout title="新闻动态" description="Wu Lab的最新研究进展、获奖信息和学术动态">
@@ -70,6 +75,7 @@ const months = Object.keys(newsByMonth);
                       image={news.data.image}
                       images={news.data.images}
                       category={news.data.category}
+                      link={detailLink(news)}
                     />
                   </div>
                 ))}

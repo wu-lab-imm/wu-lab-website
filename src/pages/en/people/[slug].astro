@@ -1,0 +1,160 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import PublicationItem from '../../../components/PublicationItem.astro';
+import { getCollection } from 'astro:content';
+import { visiblePublications } from '../../../publications';
+
+export async function getStaticPaths() {
+  const people = await getCollection('people');
+  return people.map((person) => ({ params: { slug: person.slug }, props: { person } }));
+}
+
+const { person } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const clean = (name: string) => name.toLowerCase().replace(/[#*\s.-]/g, '');
+const aliases = [person.data.nameEn, person.data.name]
+  .filter((name): name is string => Boolean(name))
+  .map(clean);
+const publications = visiblePublications.filter((publication) =>
+  publication.labMembers?.some((name) =>
+    aliases.some((alias) => clean(name).includes(alias) || alias.includes(clean(name)))
+  )
+);
+
+const roles: Record<string, string> = {
+  PI: 'Principal Investigator',
+  Postdoc: 'Postdoctoral Fellow',
+  PhD: 'Ph.D. Student',
+  Master: "Master's Student",
+  ResearchAssistant: 'Research Assistant',
+  Undergraduate: 'Undergraduate Student',
+  Alumni: 'Alumni',
+};
+const displayName = person.data.nameEn || person.data.name;
+const roleLabel = roles[person.data.role] || person.data.role;
+const isPi = person.data.role === 'PI';
+const isAlumni = person.data.role === 'Alumni';
+const piFallbackPhoto = 'https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png';
+const photo = person.data.photo || (isPi ? piFallbackPhoto : `${base}/favicon.svg`);
+const paragraphs = (value?: string) => (value || '').split(/\n\s*\n/).map((item) => item.trim()).filter(Boolean);
+const researchLines = (person.data.researchInterestEn || '').split(/\r?\n+/).map((item) => item.trim()).filter(Boolean);
+const researchSummary = researchLines[0];
+const researchDetails = researchLines.slice(1);
+const profileParagraphs = paragraphs(person.data.profileEn);
+const overviewParagraphs = paragraphs(person.data.bioEn);
+const career = (person.data.careerEn || []).map((entry) => {
+  const [period, ...details] = entry.split('|');
+  return { period: period.trim(), detail: details.join('|').trim() };
+});
+const fields = person.data.subjectFieldsEn || [];
+const positionLabel = isAlumni ? person.data.positionEn : person.data.positionEn;
+---
+
+<Layout lang="en" title={`${displayName} - People`} description={`${displayName}, ${roleLabel} at the Wu Lab`}>
+  <Header lang="en" />
+  <main class="min-h-screen bg-[#f7f8fc] pt-28">
+    <section class="mx-auto max-w-6xl px-6 py-12">
+      <a href={`${base}/en/people`} class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">← Back to People</a>
+
+      <div class="mt-7 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
+        <div class="grid md:grid-cols-[320px_1fr]">
+          <aside class="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8">
+            <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-white shadow-lg">
+              <img
+                src={photo}
+                alt={displayName}
+                class:list={['h-full w-full', person.data.photo || isPi ? 'object-cover object-top' : 'object-contain p-16']}
+              />
+            </div>
+
+            <div class="mt-6 space-y-2.5 text-sm leading-6 text-slate-600">
+              {person.data.email && <a class="block break-all font-medium text-indigo-600 hover:underline" href={`mailto:${person.data.email}`}>{person.data.email}</a>}
+              {person.data.startYear && <p><span class="font-semibold text-slate-700">Joined:</span> {person.data.startYear}</p>}
+              {isAlumni && person.data.graduationYear && <p><span class="font-semibold text-slate-700">Graduated / left:</span> {person.data.graduationYear}</p>}
+              {person.data.affiliationEn && <p>{person.data.affiliationEn}</p>}
+              {isPi && person.data.advisorCategoryEn && <p>{person.data.advisorCategoryEn}</p>}
+              {isPi && person.data.departmentEn && <p>{person.data.departmentEn}</p>}
+              {isAlumni && person.data.positionEn && <p><span class="font-semibold text-slate-700">Next position:</span> {person.data.positionEn}</p>}
+
+              <div class="flex flex-wrap gap-2 pt-3">
+                {person.data.websiteImm && <a class="rounded-lg bg-indigo-600 px-3 py-2 font-semibold text-white hover:bg-indigo-700" href={person.data.websiteImm} target="_blank" rel="noreferrer">IMM profile ↗</a>}
+                {person.data.websitePumc && <a class="rounded-lg bg-emerald-600 px-3 py-2 font-semibold text-white hover:bg-emerald-700" href={person.data.websitePumc} target="_blank" rel="noreferrer">PUMC profile ↗</a>}
+                {!person.data.websiteImm && !person.data.websitePumc && person.data.website && <a class="font-semibold text-indigo-600 hover:underline" href={person.data.website} target="_blank" rel="noreferrer">Personal website ↗</a>}
+              </div>
+            </div>
+          </aside>
+
+          <div class="p-8 md:p-12">
+            <span class="text-xs font-bold uppercase tracking-[.2em] text-emerald-700">{roleLabel}</span>
+            <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-950 md:text-5xl">{displayName}</h1>
+            {positionLabel && !isAlumni && <p class="mt-4 text-lg font-semibold text-indigo-700">{positionLabel}{person.data.advisorCategoryEn ? ` · ${person.data.advisorCategoryEn}` : ''}</p>}
+
+            {researchSummary && <section class="mt-8 rounded-2xl border border-indigo-100 bg-indigo-50 p-5">
+              <h2 class="text-sm font-bold text-indigo-800">Research Interests</h2>
+              <p class="mt-2 leading-7 text-slate-700">{researchSummary}</p>
+            </section>}
+
+            {profileParagraphs.length > 0 && <section class="profile-section mt-9">
+              <h2>Biography</h2>
+              {profileParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+            </section>}
+
+            {researchDetails.length > 0 && <section class="profile-section mt-9">
+              <h2>Research Profile</h2>
+              {researchDetails.map((paragraph) => <p>{paragraph}</p>)}
+            </section>}
+
+            {isPi && overviewParagraphs.length > 0 && <section class="profile-section mt-9">
+              <h2>Research Focus</h2>
+              {overviewParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+            </section>}
+
+            {isPi && career.length > 0 && <section class="mt-10">
+              <h2 class="text-xl font-bold text-slate-900">Career & Education</h2>
+              <div class="mt-5 space-y-5 border-l-2 border-emerald-300 pl-6">
+                {career.map((item) => <div class="relative">
+                  <span class="absolute -left-[31px] top-1.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span>
+                  <p class="font-bold text-slate-900">{item.period}</p>
+                  {item.detail && <p class="mt-1 leading-7 text-slate-600">{item.detail}</p>}
+                </div>)}
+              </div>
+            </section>}
+
+            {isPi && fields.length > 0 && <section class="mt-10">
+              <h2 class="text-xl font-bold text-slate-900">Research Fields</h2>
+              <div class="mt-4 flex flex-wrap gap-2">{fields.map((field) => <span class="rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700">{field}</span>)}</div>
+            </section>}
+
+            {!researchSummary && profileParagraphs.length === 0 && <section class="mt-9 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500">Member Information</h2>
+              <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                <div><dt class="text-slate-400">Role</dt><dd class="mt-1 font-semibold text-slate-700">{roleLabel}</dd></div>
+                {person.data.startYear && <div><dt class="text-slate-400">Joined the lab</dt><dd class="mt-1 font-semibold text-slate-700">{person.data.startYear}</dd></div>}
+                {isAlumni && person.data.graduationYear && <div><dt class="text-slate-400">Graduated / left</dt><dd class="mt-1 font-semibold text-slate-700">{person.data.graduationYear}</dd></div>}
+                {isAlumni && person.data.positionEn && <div><dt class="text-slate-400">Next position</dt><dd class="mt-1 font-semibold text-slate-700">{person.data.positionEn}</dd></div>}
+              </dl>
+            </section>}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 pb-20">
+      <div class="mb-6 flex items-end justify-between gap-4">
+        <div><span class="text-xs font-bold uppercase tracking-[.2em] text-indigo-600">Publications</span><h2 class="mt-2 text-3xl font-bold text-slate-950">Related Publications</h2></div>
+        <span class="text-sm text-slate-500">{publications.length} {publications.length === 1 ? 'publication' : 'publications'}</span>
+      </div>
+      {publications.length
+        ? <div class="space-y-5">{publications.map((publication) => <PublicationItem {...publication} lang="en" />)}</div>
+        : <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">No publications are currently linked to this member.</div>}
+    </section>
+  </main>
+  <Footer lang="en" />
+</Layout>
+
+<style>
+  .profile-section h2{font-size:1.25rem;font-weight:700;color:#172033}
+  .profile-section p{margin-top:.85rem;line-height:1.9;color:#475569}
+</style>

@@ -1,0 +1,187 @@
+{
+  "headline": "欢迎有志于结构生物学和药物研发的优秀人才加入 Wu Lab",
+  "headlineEn": "We welcome motivated researchers and students interested in structural biology and drug discovery to join the Wu Lab.",
+  "positions": [
+    {
+      "title": "助理研究员",
+      "titleEn": "Assistant Researcher",
+      "requirements": [
+        "具有博士研究生学历学位，符合药物所社会公开招聘岗位的基本条件",
+        "计算生物学、药物化学、糖生物学、药理学等相关专业背景",
+        "具有计算生物学背景者优先",
+        "本岗位按药物所公开招聘程序报名、资格审查和考核，具体条件以官方公告及岗位信息表为准"
+      ],
+      "directions": [
+        "疾病相关靶点的结构药理学",
+        "结构与计算驱动的药物发现",
+        "糖生物学与药理机制研究"
+      ],
+      "benefits": [
+        "药物所科研岗 / 专业技术岗位",
+        "报名截止时间、人员类型、户籍及工作经历要求以官方公告为准"
+      ],
+      "link": "https://www.imm.ac.cn/tz/rczp/7c780be3ad3a49108f4c410d60fe8b13.htm",
+      "linkLabel": "查看药物所助理研究员招聘公告与报名要求"
+    },
+    {
+      "title": "博士后",
+      "titleEn": "Postdoctoral Fellow · 计划招收 2 人",
+      "requirements": [
+        "一般应获得博士学位不超过 3 年，或为即将毕业的应届博士毕业生，进站时年龄一般不超过 35 周岁",
+        "计算生物学、药物化学、糖生物学、药理学等相关专业背景",
+        "具有计算生物学背景者优先",
+        "具有较强的独立科研、英文写作和沟通能力，原则上以第一作者发表过高水平研究论文",
+        "须全脱产从事博士后研究工作，并符合国家及院校博士后进站要求"
+      ],
+      "directions": [
+        "疾病相关靶点的结构药理学",
+        "结构与计算驱动的药物发现",
+        "糖生物学与药理机制研究"
+      ],
+      "benefits": [
+        "提供具有竞争力的薪酬待遇，具体面议",
+        "享受社会保险、住房公积金等政策待遇",
+        "支持申请中国医学科学院北京协和医学院优秀博士后专项资助计划"
+      ],
+      "link": "https://www.imm.ac.cn/tz/rczp/45e5bfe095a04258b185cacba52a203c.htm",
+      "linkLabel": "查看药物所博士后招募公告与完整申请要求"
+    },
+    {
+      "title": "博士研究生",
+      "titleEn": "PhD Student",
+      "requirements": [
+        "生物学、药学、化学等相关专业背景",
+        "对结构生物学和药物研发有浓厚兴趣",
+        "具有良好的学习能力和科研潜力"
+      ],
+      "directions": [
+        "结构生物学技术（冷冻电镜、X射线晶体学）",
+        "蛋白质生物化学",
+        "药物作用机制研究"
+      ]
+    },
+    {
+      "title": "硕士研究生",
+      "titleEn": "Master Student",
+      "requirements": [
+        "生物学、药学、化学等相关专业背景",
+        "对结构生物学感兴趣",
+        "具有较强的学习能力和动手能力"
+      ],
+      "directions": [
+        "蛋白质表达与纯化",
+        "结构生物学基础实验技术",
+        "数据分析与处理"
+      ]
+    }
+  ],
+  "applicationSteps": [
+    {
+      "title": "联系课题组",
+      "description": "通过实验室邮箱联系，简要说明申请意向"
+    },
+    {
+      "title": "提交申请材料",
+      "description": "发送个人简历及相关材料（如代表性成果、成绩单等）"
+    },
+    {
+      "title": "初筛与面试",
+      "description": "材料初步筛选后，联系合适的申请者安排面试"
+    }
+  ],
+  "environment": [
+    {
+      "icon": "🔬",
+      "title": "先进设施",
+      "description": "冷冻电镜平台支持"
+    },
+    {
+      "icon": "💎",
+      "title": "晶体学设备",
+      "description": "X 射线晶体衍射设备"
+    },
+    {
+      "icon": "🧪",
+      "title": "实验平台",
+      "description": "完善的生物化学和细胞生物学实验平台"
+    },
+    {
+      "icon": "👥",
+      "title": "学术氛围",
+      "description": "定期组内学术讨论"
+    },
+    {
+      "icon": "🌍",
+      "title": "合作交流",
+      "description": "参加国内外学术会议机会"
+    }
+  ],
+  "contact": {
+    "name": "吴惊香 研究员",
+    "email": "wujingxiang@imm.ac.cn",
+    "address": "北京市大兴区永旺路37号中国医学科学院药物研究所产学研基地，邮编102600",
+    "message": "欢迎随时咨询，期待您的加入！"
+  },
+  "positionsEn": [
+    {
+      "title": "Assistant Researcher",
+      "titleEn": "Assistant Researcher",
+      "requirements": [
+        "A doctoral degree and eligibility under the Institute of Materia Medica public recruitment requirements",
+        "Background in computational biology, medicinal chemistry, glycobiology, pharmacology, or a related discipline",
+        "Applicants with a computational biology background are preferred",
+        "Applications, eligibility review, and assessment follow the Institute's official public recruitment process; the official announcement and position table govern"
+      ],
+      "directions": [
+        "Structural pharmacology of disease-related targets",
+        "Structure- and computation-guided drug discovery",
+        "Glycobiology and pharmacological mechanisms"
+      ],
+      "benefits": [
+        "Research / professional technical position at the Institute of Materia Medica",
+        "Please consult the official announcement for the deadline, applicant category, residency, and experience requirements"
+      ],
+      "link": "https://www.imm.ac.cn/tz/rczp/7c780be3ad3a49108f4c410d60fe8b13.htm",
+      "linkLabel": "View the official Assistant Researcher recruitment announcement"
+    },
+    {
+      "title": "Postdoctoral Fellow",
+      "titleEn": "Postdoctoral Fellow · 2 openings",
+      "requirements": ["A Ph.D. normally awarded within the past three years, or expected shortly; applicants are generally expected to be under 35 upon appointment", "Background in computational biology, medicinal chemistry, glycobiology, pharmacology, or a related discipline", "Applicants with a computational biology background are preferred", "Strong independent research, English writing, and communication skills, normally supported by at least one high-level first-author publication", "Full-time postdoctoral research and eligibility under national and institutional appointment rules"],
+      "directions": ["Structural pharmacology of disease-related targets", "Structure- and computation-guided drug discovery", "Glycobiology and pharmacological mechanisms"],
+      "benefits": ["Competitive compensation, subject to individual discussion", "Social insurance and housing provident fund benefits in accordance with policy", "Support for applications to the CAMS & PUMC Excellent Postdoctoral Fellowship Program"],
+      "link": "https://www.imm.ac.cn/tz/rczp/45e5bfe095a04258b185cacba52a203c.htm",
+      "linkLabel": "View the official postdoctoral recruitment announcement and full requirements"
+    },
+    {
+      "title": "Ph.D. Student",
+      "titleEn": "Ph.D. Student",
+      "requirements": ["Background in biology, pharmacy, chemistry, or a related discipline", "Strong interest in structural biology and drug discovery", "Demonstrated learning ability and research potential"],
+      "directions": ["Cryo-EM and X-ray crystallography", "Protein biochemistry", "Mechanisms of drug action"]
+    },
+    {
+      "title": "Master's Student",
+      "titleEn": "Master's Student",
+      "requirements": ["Background in biology, pharmacy, chemistry, or a related discipline", "Interest in structural biology", "Strong learning ability and hands-on skills"],
+      "directions": ["Protein expression and purification", "Fundamental structural biology techniques", "Data analysis and processing"]
+    }
+  ],
+  "applicationStepsEn": [
+    {"title": "Contact the Lab", "description": "Email the laboratory with a brief statement of your application interest."},
+    {"title": "Submit Materials", "description": "Send your CV and supporting materials, such as representative work or transcripts."},
+    {"title": "Screening and Interview", "description": "Selected applicants will be contacted for an interview after initial review."}
+  ],
+  "environmentEn": [
+    {"icon": "🔬", "title": "Advanced Facilities", "description": "Access to cryo-electron microscopy platforms"},
+    {"icon": "💎", "title": "Crystallography", "description": "X-ray diffraction facilities"},
+    {"icon": "🧪", "title": "Experimental Platforms", "description": "Comprehensive biochemistry and cell biology infrastructure"},
+    {"icon": "👥", "title": "Academic Community", "description": "Regular laboratory seminars and scientific discussion"},
+    {"icon": "🌍", "title": "Collaboration", "description": "Opportunities for domestic and international scientific exchange"}
+  ],
+  "contactEn": {
+    "name": "Prof. Jing-xiang Wu",
+    "email": "wujingxiang@imm.ac.cn",
+    "address": "37 Yongwang Road, Daxing District, Beijing 102600, China",
+    "message": "Please feel free to contact us. We look forward to hearing from you."
+  }
+}

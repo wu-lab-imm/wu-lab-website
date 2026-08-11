@@ -2,8 +2,11 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
-  site: 'https://wulab.github.io',
+  site: 'https://wu-lab-imm.github.io',
   base: '/wu-lab-website',
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [tailwind()],
   markdown: {
     shikiConfig: {

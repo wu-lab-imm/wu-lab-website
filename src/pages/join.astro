@@ -4,9 +4,10 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import joinContent from '../join.json';
 
 // 职位信息
-const positions = [
+const legacyPositions = [
   {
     title: '博士后',
     titleEn: 'Postdoctoral',
@@ -58,7 +59,7 @@ const positions = [
 ];
 
 // 申请流程
-const applicationSteps = [
+const legacyApplicationSteps = [
   { step: 1, title: '联系投递', description: '发送个人简历和研究兴趣说明至实验室邮箱' },
   { step: 2, title: '准备材料', description: '附上代表性学术成果（论文、成绩单等）' },
   { step: 3, title: '提供推荐', description: '提供2-3位推荐人联系方式' },
@@ -67,13 +68,14 @@ const applicationSteps = [
 ];
 
 // 实验室环境
-const envItems = [
+const legacyEnvItems = [
   { icon: '🔬', title: '先进设施', description: '冷冻电镜设施（北京大学冷冻电镜平台支持）' },
   { icon: '💎', title: '晶体学设备', description: 'X射线晶体衍射设备' },
   { icon: '🧪', title: '实验平台', description: '完善的生物化学和细胞生物学实验平台' },
   { icon: '👥', title: '学术氛围', description: '定期组内学术讨论' },
   { icon: '🌍', title: '合作交流', description: '参加国内外学术会议机会' },
 ];
+const { headline, positions, applicationSteps, environment: envItems, contact } = joinContent;
 ---
 
 <Layout title="加入我们" description="欢迎有志于结构生物学和药物研发的优秀人才加入Wu Lab">
@@ -87,7 +89,7 @@ const envItems = [
           加入我们 <span class="text-gray-500">| Join Us</span>
         </h1>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          欢迎有志于结构生物学和药物研发的优秀人才加入Wu Lab
+          {headline}
         </p>
       </div>
     </section>
@@ -169,11 +171,24 @@ const envItems = [
                     )}
                   </div>
                 </div>
+                {position.link && <div class="mt-7 border-t border-slate-100 pt-6">
+                  <a href={position.link} target="_blank" rel="noreferrer" class="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-indigo-700">
+                    {position.linkLabel || '查看官方招聘公告'} ↗
+                  </a>
+                </div>}
               </div>
             </div>
           ))}
         </div>
       </div>
+    </section>
+
+    <section class="py-16 bg-indigo-50/60">
+      <div class="max-w-6xl mx-auto px-6"><h2 class="text-3xl font-bold text-center text-slate-900">申请流程 <span class="text-indigo-600">| How to Apply</span></h2><div class="mt-10 grid gap-6 md:grid-cols-3">{applicationSteps.map((item,index)=><div class="rounded-2xl bg-white p-7 shadow-sm"><span class="text-sm font-bold text-indigo-600">STEP {index+1}</span><h3 class="mt-5 text-xl font-bold text-slate-900">{item.title}</h3><p class="mt-3 leading-relaxed text-slate-600">{item.description}</p></div>)}</div></div>
+    </section>
+
+    <section class="py-16 bg-white">
+      <div class="max-w-6xl mx-auto px-6"><h2 class="text-3xl font-bold text-center text-slate-900">实验室环境 <span class="text-emerald-600">| Environment</span></h2><div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">{envItems.map(item=><div class="rounded-2xl border border-slate-200 p-5 text-center"><span class="text-3xl">{item.icon}</span><h3 class="mt-3 font-bold text-slate-900">{item.title}</h3><p class="mt-2 text-sm leading-6 text-slate-600">{item.description}</p></div>)}</div></div>
     </section>
 
     <!-- 联系方式 Section -->
@@ -184,18 +199,18 @@ const envItems = [
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
             <div>
               <h3 class="font-semibold mb-2 text-amber-500">联系人</h3>
-              <p class="text-gray-300">吴惊香 研究员</p>
+              <p class="text-gray-300">{contact.name}</p>
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-amber-500">邮箱</h3>
-              <a href="mailto:wujingxiang@imm.ac.cn" class="text-amber-400 hover:text-amber-300 transition-colors">wujingxiang@imm.ac.cn</a>
+              <a href={`mailto:${contact.email}`} class="text-amber-400 hover:text-amber-300 transition-colors">{contact.email}</a>
             </div>
             <div class="md:col-span-2">
               <h3 class="font-semibold mb-2 text-amber-500">地址</h3>
-              <p class="text-gray-300">北京市大兴区永旺路37号中国医学科学院药物研究所产学研基地，邮编102600</p>
+              <p class="text-gray-300">{contact.address}</p>
             </div>
           </div>
-          <p class="mt-8 text-gray-400">欢迎随时咨询，期待您的加入！</p>
+          <p class="mt-8 text-gray-400">{contact.message}</p>
         </div>
       </div>
     </section>

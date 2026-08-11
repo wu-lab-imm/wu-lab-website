@@ -1,111 +1,61 @@
 ---
 // Hero 组件 - 首页英雄区域 (简洁学术风格)
-const base = '/wu-lab-website';
+import { getCollection } from 'astro:content';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 interface Props {
   labName?: string;
   labNameEn?: string;
   subtitle?: string;
   description?: string;
+  lang?: 'zh' | 'en';
 }
 
 const {
   labName = '吴惊香课题组',
   labNameEn = 'Wu Lab',
   subtitle = '中国医学科学院药物研究所 · 天然药物及核药基础与新药创制全国重点实验室',
-  description = '运用冷冻电镜与X射线晶体衍射技术，阐明疾病相关蛋白的工作机制与药物作用机理。'
+  description = '运用冷冻电镜与X射线晶体衍射技术，阐明疾病相关蛋白的工作机制与药物作用机理。',
+  lang = 'zh'
 } = Astro.props;
+const prefix = lang === 'en' ? `${base}/en` : base;
+const researchItems = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
+const primary = researchItems.find((item) => item.data.homeSlot === 'primary') || researchItems[0];
+const secondary = researchItems.find((item) => item.data.homeSlot === 'secondary') || researchItems.find((item) => item.slug !== primary?.slug) || primary;
+const imageUrl = (path: string | undefined, fallback: string) => path ? (path.startsWith(base + '/') ? path : path.startsWith('/images/') ? base + path : path) : `${base}${fallback}`;
+const titleFor = (item: typeof primary) => lang === 'en' ? (item?.data.titleEn || item?.data.title) : item?.data.title;
+const shortFor = (item: typeof primary) => lang === 'en' ? (item?.data.shortNameEn || item?.data.titleEn || item?.data.title) : (item?.data.shortName || item?.data.title);
 ---
 
-<section class="relative min-h-[85vh] flex items-center bg-white">
-  <div class="max-w-7xl mx-auto px-6 py-32">
-    <div class="grid lg:grid-cols-2 gap-12 items-center">
-      <!-- Left: Text content -->
-      <div class="order-2 lg:order-1">
-        <!-- English title - Larger -->
-        <h1 class="text-7xl md:text-8xl lg:text-9xl font-display font-bold text-gray-900 tracking-tight animate-fade-in-up">
-          {labNameEn}
-        </h1>
-
-        <!-- Chinese subtitle - Smaller -->
-        <p class="text-2xl md:text-3xl text-gray-500 mt-2 font-display animate-fade-in-up" style="animation-delay: 100ms;">
-          {labName}
-        </p>
-
-        <!-- Institution info - Single line, larger -->
-        <p class="text-lg text-gray-400 mt-6 max-w-2xl whitespace-nowrap animate-fade-in-up" style="animation-delay: 200ms;">
-          {subtitle}
-        </p>
-
-        <!-- Divider -->
-        <div class="w-20 h-px bg-gray-300 my-8 animate-fade-in-up" style="animation-delay: 300ms;"></div>
-
-        <!-- Research description - Larger and clearer -->
-        <p class="text-xl text-gray-600 leading-relaxed max-w-xl animate-fade-in-up" style="animation-delay: 400ms;">
-          {description}
-        </p>
-
-        <!-- CTA buttons - Larger -->
-        <div class="flex flex-wrap gap-4 mt-12 animate-fade-in-up" style="animation-delay: 500ms;">
-          <a
-            href={base + '/research'}
-            class="px-8 py-4 bg-gray-900 text-white text-lg font-medium tracking-wide hover:bg-amber-600 transition-colors duration-300"
-          >
-            Research
-          </a>
-          <a
-            href={base + '/people'}
-            class="px-8 py-4 border-2 border-gray-300 text-gray-700 text-lg font-medium tracking-wide hover:border-gray-900 hover:text-gray-900 transition-colors duration-300"
-          >
-            Team
-          </a>
+<section class="relative overflow-hidden bg-[#f7f8fc] pt-24">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(79,70,229,.12),transparent_32%),radial-gradient(circle_at_88%_72%,rgba(16,185,129,.12),transparent_30%)]"></div>
+  <div class="relative max-w-7xl mx-auto px-6 py-20 lg:py-28">
+    <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-14 items-center">
+      <div class="animate-fade-in-up">
+        <div class="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[.18em] text-indigo-700 shadow-sm">Structure reveals function</div>
+        <h1 class="mt-7 text-6xl md:text-8xl font-display font-bold text-slate-950 tracking-[-.055em] leading-[.9]">{labNameEn}</h1>
+        <p class="mt-5 text-2xl md:text-3xl font-semibold text-slate-700">{labName}</p>
+        <p class="mt-7 max-w-2xl text-lg leading-relaxed text-slate-600">{description}</p>
+        <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-500">{subtitle}</p>
+        <div class="flex flex-wrap gap-3 mt-9">
+          <a href={prefix + '/research'} class="rounded-xl bg-indigo-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-700">{lang === 'en' ? 'Explore Our Research' : '探索研究方向'}</a>
+          <a href={prefix + '/publications'} class="rounded-xl border border-slate-300 bg-white px-6 py-3.5 font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400">{lang === 'en' ? 'View Publications' : '查看研究成果'}</a>
+        </div>
+        <div class="mt-12 grid max-w-xl grid-cols-2 gap-3">
+          <div class="rounded-2xl border border-indigo-100 bg-indigo-50/80 p-4"><span class="text-xs font-bold uppercase tracking-widest text-indigo-600">Structural Biology</span><p class="mt-2 text-sm text-slate-600">{lang === 'en' ? 'Cryo-EM · Membrane proteins · Structural pharmacology' : '冷冻电镜 · 膜蛋白 · 结构药理学'}</p></div>
+          <div class="rounded-2xl border border-emerald-100 bg-emerald-50/80 p-4"><span class="text-xs font-bold uppercase tracking-widest text-emerald-700">Glycobiology</span><p class="mt-2 text-sm text-slate-600">{lang === 'en' ? 'Glycan recognition · Glycosylation · Functional mechanisms' : '糖链识别 · 糖基化 · 功能机制'}</p></div>
         </div>
       </div>
-
-      <!-- Right: Protein structure visualization -->
-      <div class="order-1 lg:order-2 flex items-center justify-center animate-fade-in-up" style="animation-delay: 300ms;">
-        <div class="relative w-full max-w-sm aspect-square">
-          <!-- Protein structure SVG -->
-          <svg viewBox="0 0 300 300" class="w-full h-full">
-            <!-- Alpha helices - dark gray -->
-            <g fill="none" stroke="#404040" stroke-width="2" stroke-linecap="round" opacity="0.6">
-              <path d="M80 50 Q100 60 80 80 Q60 100 80 120 Q100 140 80 160 Q60 180 80 200 Q100 220 80 240 Q60 260 80 280"/>
-            </g>
-
-            <g fill="none" stroke="#525252" stroke-width="2" stroke-linecap="round" opacity="0.5">
-              <path d="M130 40 Q150 50 130 70 Q110 90 130 110 Q150 130 130 150 Q110 170 130 190 Q150 210 130 230 Q110 250 130 270"/>
-            </g>
-
-            <g fill="none" stroke="#737373" stroke-width="1.5" stroke-linecap="round" opacity="0.4">
-              <path d="M180 60 Q200 70 180 90 Q160 110 180 130 Q200 150 180 170 Q160 190 180 210 Q200 230 180 250 Q160 270 180 290"/>
-            </g>
-
-            <!-- Beta sheets - amber -->
-            <g fill="none" stroke="#d97706" stroke-width="2" opacity="0.7">
-              <rect x="210" y="100" width="50" height="10" rx="2"/>
-              <rect x="210" y="115" width="50" height="10" rx="2"/>
-              <rect x="210" y="130" width="50" height="10" rx="2"/>
-            </g>
-
-            <!-- Ligands - amber -->
-            <g fill="#d97706">
-              <circle cx="240" cy="220" r="6"/>
-              <circle cx="228" cy="232" r="4" opacity="0.7"/>
-              <circle cx="252" cy="228" r="3" opacity="0.5"/>
-            </g>
-
-            <!-- Connection lines -->
-            <g stroke="#d4d4d4" stroke-width="0.5" opacity="0.5">
-              <line x1="110" y1="150" x2="210" y2="110"/>
-              <line x1="150" y1="160" x2="210" y2="130"/>
-              <line x1="190" y1="160" x2="240" y2="220"/>
-            </g>
-          </svg>
-
-          <!-- Decorative labels -->
-          <div class="absolute top-4 right-0 text-xs text-gray-400 font-mono tracking-widest">CRYO-EM</div>
-          <div class="absolute bottom-4 left-0 text-xs text-gray-400 font-mono tracking-widest">STRUCTURE</div>
-        </div>
+      <div class="relative min-h-[520px] animate-fade-in-up" style="animation-delay:120ms">
+        {primary && <a href={`${prefix}/research#${primary.slug}`} class="absolute right-0 top-0 block w-[82%] overflow-hidden rounded-[2rem] border-8 border-white bg-white shadow-2xl shadow-indigo-200/60 transition hover:-translate-y-1">
+          <img src={imageUrl(primary.data.image, '/images/research/research-1.png')} alt={titleFor(primary)} class="h-80 w-full object-cover object-top" />
+          <div class="p-5"><span class="text-xs font-bold uppercase tracking-[.18em] text-indigo-600">{shortFor(primary)}</span><p class="mt-1 font-semibold text-slate-800">{titleFor(primary)}</p></div>
+        </a>}
+        {secondary && <a href={`${prefix}/research#${secondary.slug}`} class="absolute bottom-0 left-0 block w-[63%] overflow-hidden rounded-[1.75rem] border-8 border-white bg-white shadow-2xl shadow-emerald-200/60 transition hover:-translate-y-1">
+          <img src={imageUrl(secondary.data.image, '/images/research/glycan-1.jpg')} alt={titleFor(secondary)} class="h-56 w-full object-cover object-top" />
+          <div class="p-4"><span class="text-xs font-bold uppercase tracking-[.18em] text-emerald-700">{shortFor(secondary)}</span><p class="mt-1 text-sm font-semibold text-slate-800">{titleFor(secondary)}</p></div>
+        </a>}
+        <div class="absolute bottom-24 right-2 rounded-2xl border border-white bg-slate-950 px-5 py-4 text-white shadow-xl"><span class="block font-mono text-2xl font-semibold">Å</span><span class="text-[10px] uppercase tracking-[.2em] text-slate-400">Atomic insight</span></div>
       </div>
     </div>
   </div>

@@ -1,8 +1,157 @@
 [
   {
-    "id": "net-nature-2024",
+    "scope": "lab",
+    "display": true,
+    "title": "Substrate recognition and allosteric inhibition of human betaine/GABA transporter 1",
+    "titleCn": "人甜菜碱/GABA 转运蛋白 1 的底物识别和变构抑制",
+    "abstractCn": "本研究解析了人源甜菜碱/GABA转运体1（BGT1）在多种底物和抑制剂结合状态下的高分辨率结构，揭示了GABA与甜菜碱的双底物识别、底物释放相关构象转换及ATPCA的底物样作用机制，并发现选择性抑制剂BPDBA结合于一个此前未被认识的胞内变构口袋，通过限制TM1a构象转换阻断底物释放。",
+    "abstractEn": "The betaine/GABA transporter 1 (BGT1, SLC6A12) regulates neurotransmitter clearance and osmotic balance by transporting GABA and betaine in a sodium- and chloride-dependent manner. BGT1 has become a promising target for epilepsy treatment due to the anticonvulsant effects observed with BGT1 inhibitors. Although BGT1 plays key roles in both renal and neuronal physiology, the molecular basis of its substrate recognition and inhibition remains unclear. Here, we report cryo-EM structures of human BGT1 in the apo form and in complex with GABA, betaine, the substrate-like inhibitor ATPCA, and the selective inhibitor BPDBA all without the use of fiducial markers. These structures capture BGT1 in both occluded and inward-facing conformations, delineating the conformational transitions associated with substrate release. BPDBA binds to an intracellular cavity adjacent to the intracellular gate. This binding mode locks TM1a to transit and inhibits substrate release. Together, our results uncover distinct mechanisms of substrate recognition and allosteric inhibition of hBGT1, offering structural insights for the development of hBGT1-selective modulators.",
+    "image": "/wu-lab-website/images/publications/a12.webp",
+    "authors": [
+      "Jun Zhou#",
+      "Jiameng Liu#",
+      "Yuchen Jin",
+      "Qianyu Wang",
+      "Haibo Yu*",
+      "Jing-Xiang Wu*"
+    ],
+    "journal": "Nature Communications",
+    "year": 2026,
+    "volume": "17",
+    "issue": "1",
+    "pages": "6581",
+    "doi": "https://doi.org/10.1038/s41467-026-72924-5",
+    "labMembers": [
+      "Jun Zhou",
+      "Jiameng Liu",
+      "Qianyu Wang",
+      "Jing-Xiang Wu"
+    ],
+    "impactFactor": 18.1,
+    "isHighImpact": true,
+    "isCNS": false,
+    "id": "substrate-recognition-and-allosteric-inhibition-of-human-betaine"
+  },
+  {
+    "scope": "lab",
+    "display": true,
+    "title": "Structural basis for the transport mechanism and cholesterol modulation of the human proline transporter",
+    "titleCn": "人脯氨酸转运蛋白的转运机制及其胆固醇调节的结构基础",
+    "abstractCn": "本研究解析了人源脯氨酸转运体PROT在不同功能状态下的高分辨率结构，揭示了L-脯氨酸选择性识别及底物释放的分子机制，并发现胆固醇可直接占据PROT的正构底物结合口袋、竞争性调控脯氨酸转运，揭示了膜脂直接参与神经递质转运调控的新机制。",
+    "abstractEn": "L-proline, an amino acid, acts as a potent neuromodulator in the central nervous system, with its synaptic concentrations finely regulated by the high-affinity L-proline transporter (PROT). Dysregulation of PROT function is implicated in neuropsychiatric disorders, yet its regulatory mechanisms remain poorly characterized. Here, we present high-resolution cryo-electron microscopy structures of human PROT in L-proline-free consensus and L-proline-bound states. The L-proline-bound structure reveals an occluded conformation, detailing the coordination of substrate and ions. Strikingly, our L-proline-free consensus structures capture an inward-open conformation with a cholesterol molecule bound directly within the substrate-binding site. Transport kinetics studies demonstrate that partial cholesterol depletion increases PROT’s apparent affinity for L-proline, confirming that cholesterol inhibits L-proline uptake. Furthermore, we identify a conformationally sensitive site (CHOL1’) present only in the inward-open conformation. This work elucidates PROT’s transport cycle and demonstrates how cholesterol directly modulates neurotransmitter uptake, offering potential therapeutic strategies for brain disorders.",
+    "image": "/wu-lab-website/images/publications/a7-1786372449119.webp",
+    "authors": [
+      "Yue Zhou#",
+      "Ningqin Wang#",
+      "Jiaqi Wang,#",
+      "Xinrui Meng",
+      "Jing-Xiang Wu*"
+    ],
+    "journal": "Nature Communications",
+    "year": 2026,
+    "volume": "17",
+    "issue": "1",
+    "pages": "7285",
+    "doi": "https://doi.org/10.1038/s41467-026-72780-3",
+    "labMembers": [
+      "Yue Zhou",
+      "Ningqin Wang",
+      "Jiaqi Wang",
+      "Xinrui Meng",
+      "Jing-Xiang Wu"
+    ],
+    "impactFactor": 18.1,
+    "isHighImpact": true,
+    "isCNS": false,
+    "id": "structural-basis-for-the-transport-mechanism-and-cholesterol-mod"
+  },
+  {
+    "scope": "lab",
+    "display": true,
+    "title": "Transport and inhibition mechanisms of human glycine transporter 2",
+    "titleCn": "人类甘氨酸转运蛋白2的转运和抑制机制",
+    "abstractCn": "本研究解析了人源甘氨酸转运体2（GlyT2）在内向、封闭和外向三种功能构象下的高分辨率结构，揭示了甘氨酸选择性识别、离子耦联转运以及ORG25543和opiranserin变构抑制的分子机制，为靶向GlyT2开发非阿片类镇痛药物提供了结构基础。",
+    "abstractEn": "Neuronal human glycine transporter 2 (hGlyT2) plays a critical role in maintaining glycinergic neurotransmission via the reuptake of glycine into presynaptic neurons by using the driving force of sodium and chloride ion gradients. hGlyT2 represents an important drug target for analgesic purpose. However, its structure and the molecular mechanisms remain elusive. Here, we report structures of hGlyT2 in three functional states, including the apo state, the substrate glycine-bound state, and the inhibitor-bound states. The apo state of hGlyT2 adopts an inward conformation. The substrate glycine binds at the central pocket of hGlyT2 in its occluded conformation. Both inhibitors, ORG25543 and opiranserin, bind to an allosteric site, which is vertical to the extracellular tunnel, buried under the extracellular loop 4 (EL4) and near to the transmembrane helix 1b (TM1b). These inhibitors act as wedges to prevent the inward movement of TM1b and closure of the extracellular gate. Further structural analysis reveals both global and local conformational changes associated with the ions and glycine binding and release. These structures define the mechanisms governing transport and allosteric inhibition in hGlyT2, providing a blueprint for further development of non-opioid analgesics targeting hGlyT2.",
+    "image": "/wu-lab-website/images/publications/a5-1786372462107.webp",
+    "authors": [
+      "Wenming Ji#",
+      "Yuanzhi Yu#",
+      "Zirui Liu",
+      "Junwen Su",
+      "Qianyu Wang",
+      "Mulin Lai",
+      "Jing-Xiang Wu*"
+    ],
+    "journal": "Nature Communications",
+    "year": 2026,
+    "volume": "17",
+    "issue": "1",
+    "pages": "5321",
+    "doi": "https://doi.org/10.1038/s41467-026-71935-6",
+    "labMembers": [
+      "Wenming Ji",
+      "Yuanzhi Yu",
+      "Zirui Liu",
+      "Junwen Su",
+      "Qianyu Wang",
+      "Mulin Lai",
+      "Jing-Xiang Wu"
+    ],
+    "impactFactor": 18.1,
+    "isHighImpact": true,
+    "isCNS": false,
+    "id": "transport-and-inhibition-mechanisms-of-human-glycine-transporter"
+  },
+  {
+    "scope": "lab",
+    "display": true,
+    "title": "Structural mechanism of substrate binding and inhibition of human taurine transporter",
+    "titleCn": "人牛磺酸转运体底物结合和抑制的结构机制",
+    "abstractCn": "本研究解析了人源牛磺酸转运体在无底物、牛磺酸结合、β-丙氨酸结合及环状抑制剂 P4S 结合状态下的结构，揭示了底物、离子和抑制剂的识别方式以及转运体向内开放构象的关键特征，为设计牛磺酸转运体底物类似物和选择性抑制剂提供了结构基础。",
+    "abstractEn": "Taurine is a sulfur-containing amino acid that plays several crucial roles in the body. Its uptake is mediated by the taurine transporter (TauT). Genetic mutations and dysregulation of TauT have been linked to various neurological disorders, cardiomyopathy, childhood progressive retinal degeneration, and cancer, making TauT a promising target for therapeutic intervention in these diseases. However, the structure and mechanism of TauT remain poorly understood. In this study, we present the structures of the human taurine transporter (hTauT) under four conditions: the substrate-free state, the taurine-bound state, the β-alanine-bound state, and the cyclic inhibitor piperidine-4-sulfonate (P4S)-bound state. These structures reveal that taurine binds at the central substrate-binding site of hTauT. Notably, β-alanine and the cyclic P4S inhibitors also mimic taurine, occupying the same substrate-binding site. In the substrate-free and P4S-bound forms, hTauT also adopt an inward-open conformation, where transmembrane helix TM1a bends toward the membrane, facilitating the opening of the intracellular gate for ion and substrate release. These structural insights enhance our understanding of the mechanisms underlying substrate and ion recognition and transport in hTauT, paving the way for the future development of taurine transporter substrate analogues or selective inhibitors.",
+    "image": "/wu-lab-website/images/publications/slc6a6.webp",
+    "authors": [
+      "Yuhan Qi#",
+      "Ying Zhang#",
+      "Duanning Wang",
+      "Jiameng Liu",
+      "Yue Zhou",
+      "Wenming Ji",
+      "Xinjing Chen",
+      "Luping Liu",
+      "Rui Wang",
+      "Jing-Xiang Wu*"
+    ],
+    "journal": "Nature Communications",
+    "year": 2026,
+    "volume": "17",
+    "issue": "1",
+    "pages": "4257",
+    "doi": "10.1038/s41467-026-70772-x",
+    "category": "neuroscience",
+    "labMembers": [
+      "Yuhan Qi",
+      "Ying Zhang",
+      "Duanning Wang",
+      "Jiameng Liu",
+      "Yue Zhou",
+      "Wenming Ji",
+      "Xinjing Chen",
+      "Jing-Xiang Wu"
+    ],
+    "impactFactor": 18.1,
+    "isHighImpact": true,
+    "isCNS": false,
+    "id": "taut-natcommu-2026"
+  },
+  {
+    "scope": "lab",
+    "display": true,
     "title": "Substrate binding and inhibition mechanism of norepinephrine transporter",
     "titleCn": "去甲肾上腺素转运体的底物结合和抑制机制",
+    "abstractCn": "本研究解析了人源去甲肾上腺素转运体在无底物、底物类似物 MIBG 结合及抑制剂 radafaxine 结合状态下的冷冻电镜结构，揭示了底物识别、向内开放构象及正构抑制机制，为理解 NET 功能和相关药物设计提供了结构基础。",
+    "abstractEn": "Norepinephrine transporter (NET; encoded by SLC6A2) reuptakes the majority of the released noradrenaline back to the presynaptic terminals, thereby affecting the synaptic noradrenaline level1. Genetic mutations and dysregulation of NET are associated with a spectrum of neurological conditions in humans, making NET an important therapeutic target1. However, the structure and mechanism of NET remain unclear. Here we provide cryogenic electron microscopy structures of the human NET (hNET) in three functional states—the apo state, and in states bound to the substrate meta-iodobenzylguanidine (MIBG) or the orthosteric inhibitor radafaxine. These structures were captured in an inward-facing conformation, with a tightly sealed extracellular gate and an open intracellular gate. The substrate MIBG binds at the centre of hNET. Radafaxine also occupies the substrate-binding site and might block the structural transition of hNET for inhibition. These structures provide insights into the mechanism of substrate recognition and orthosteric inhibition of hNET.",
+    "image": "/wu-lab-website/images/publication-1.png",
     "authors": [
       "Wenming Ji#",
       "Anran Miao#",
@@ -20,15 +169,26 @@
     "volume": "633",
     "issue": "8029",
     "pages": "473-479",
-    "impactFactor": 48.5,
     "doi": "10.1038/s41586-024-07810-5",
+    "category": "neuroscience",
+    "labMembers": [
+      "Wenming Ji",
+      "Anran Miao",
+      "Kai Liang",
+      "Jiameng Liu",
+      "Yuhan Qi",
+      "Yue Zhou",
+      "Jingxiang Wu"
+    ],
+    "impactFactor": 48.5,
     "isCNS": true,
     "isHighImpact": true,
-    "labMembers": ["Wenming Ji", "Anran Miao", "Kai Liang", "Jiameng Liu", "Yuhan Qi", "Yue Zhou", "Jingxiang Wu"],
-    "category": "neuroscience"
+    "id": "net-nature-2024"
   },
   {
     "id": "duox1-natcomm-2021",
+    "scope": "pi",
+    "display": true,
     "title": "Structures of human dual oxidase 1 complex in low-calcium and high-calcium states",
     "titleCn": "人源双氧化酶1复合物在低钙和高钙状态下的结构",
     "authors": [
@@ -44,11 +204,15 @@
     "pages": "155-165",
     "impactFactor": 12.1,
     "doi": "10.1038/s41467-020-20466-9",
-    "labMembers": ["Jingxiang Wu"],
+    "labMembers": [
+      "Jingxiang Wu"
+    ],
     "category": "oxidase"
   },
   {
     "id": "katp-cellreports-2019",
+    "scope": "pi",
+    "display": true,
     "title": "The Structural Basis for the Binding of Repaglinide to the Pancreatic K-ATP Channel",
     "titleCn": "瑞格列奈结合胰腺K-ATP通道的结构基础",
     "authors": [
@@ -65,11 +229,15 @@
     "pages": "1848-1857",
     "impactFactor": 8.1,
     "doi": "10.1016/j.celrep.2019.04.050",
-    "labMembers": ["Jingxiang Wu"],
+    "labMembers": [
+      "Jingxiang Wu"
+    ],
     "category": "metabolic"
   },
   {
     "id": "katp-proteincell-2018",
+    "scope": "pi",
+    "display": true,
     "title": "Ligand binding and conformational changes of SUR1 subunit in pancreatic ATP-sensitive potassium channels",
     "titleCn": "胰腺ATP敏感钾通道SUR1亚基的配体结合和构象变化",
     "authors": [
@@ -87,11 +255,15 @@
     "pages": "553-567",
     "impactFactor": 10.2,
     "doi": "10.1007/s13238-018-0530-y",
-    "labMembers": ["Jingxiang Wu"],
+    "labMembers": [
+      "Jingxiang Wu"
+    ],
     "category": "metabolic"
   },
   {
     "id": "katp-cell-2017",
+    "scope": "pi",
+    "display": true,
     "title": "Structure of a Pancreatic ATP-Sensitive Potassium Channel",
     "titleCn": "胰腺ATP敏感钾通道的结构",
     "authors": [
@@ -111,13 +283,17 @@
     "doi": "10.1016/j.cell.2016.11.028",
     "isCNS": true,
     "isHighImpact": true,
-    "labMembers": ["Jingxiang Wu"],
+    "labMembers": [
+      "Jingxiang Wu"
+    ],
     "category": "metabolic"
   },
   {
     "id": "sad-natcomm-2015",
+    "scope": "pi",
+    "display": true,
     "title": "Structural insight into the mechanism of synergistic autoinhibition of SAD kinases",
-    "titleCn": "SAD激酶协同自抑制机制的結構洞察",
+    "titleCn": "SAD激酶协同自抑制机制的结构洞察",
     "authors": [
       "Jingxiang Wu#",
       "Yun-Sheng Cheng",
@@ -130,9 +306,15 @@
     "year": 2015,
     "volume": "6",
     "pages": "8953-8964",
-    "impactFactor": 12.1,
     "doi": "10.1038/ncomms9953",
-    "labMembers": ["Jingxiang Wu"],
-    "category": "kinase"
+    "category": "kinase",
+    "labMembers": [
+      "Jingxiang Wu"
+    ],
+    "impactFactor": 12.1,
+    "isCNS": false,
+    "isHighImpact": false,
+    "order": null,
+    "startYear": null
   }
 ]

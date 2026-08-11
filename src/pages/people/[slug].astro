@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PublicationItem from '../../components/PublicationItem.astro';
+import { getCollection } from 'astro:content';
+import { visiblePublications } from '../../publications';
+
+export async function getStaticPaths() {
+  const people = await getCollection('people');
+  return people.map((person) => ({ params: { slug: person.slug }, props: { person } }));
+}
+
+const { person } = Astro.props;
+const { Content } = await person.render();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const clean = (name: string) => name.toLowerCase().replace(/[#*\s.-]/g, '');
+const aliases = [person.data.nameEn, person.data.name].filter((name): name is string => Boolean(name)).map(clean);
+const publications = visiblePublications.filter((publication) => publication.labMembers?.some((name) => aliases.some((alias) => clean(name).includes(alias) || alias.includes(clean(name)))));
+const roleLabels: Record<string, string> = { PI: 'Principal Investigator', Postdoc: 'Postdoctoral Fellow', PhD: 'PhD Student', Master: 'Master Student', ResearchAssistant: 'Research Assistant', Undergraduate: 'Undergraduate', Alumni: 'Alumni' };
+const piFallbackPhoto = 'https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png';
+const photo = person.data.photo || (person.data.role === 'PI' ? piFallbackPhoto : `${base}/favicon.svg`);
+---
+
+<Layout title={`${person.data.name} - 团队成员`} description={`${person.data.name}，Wu Lab ${roleLabels[person.data.role] || person.data.role}`}>
+  <Header />
+  <main class="min-h-screen bg-[#f7f8fc] pt-28">
+    <section class="max-w-6xl mx-auto px-6 py-12">
+      <a href={`${base}/people`} class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">← 返回团队成员</a>
+      <div class="mt-7 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
+        <div class="grid md:grid-cols-[320px_1fr]">
+          <div class="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8">
+            <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-white shadow-lg"><img src={photo} alt={person.data.name} class:list={['h-full w-full', person.data.photo || person.data.role === 'PI' ? 'object-cover object-top' : 'object-contain p-16']} /></div>
+            <div class="mt-6 space-y-2 text-sm text-slate-600">
+              {person.data.email && <a class="block text-indigo-600 hover:underline" href={`mailto:${person.data.email}`}>{person.data.email}</a>}
+              {person.data.startYear && <p>加入课题组：{person.data.startYear}</p>}
+              {person.data.affiliation && <p>{person.data.affiliation}</p>}
+              <div class="flex flex-wrap gap-3 pt-2">
+                {person.data.websiteImm && <a class="inline-block rounded-lg bg-indigo-600 px-3 py-2 font-semibold text-white hover:bg-indigo-700" href={person.data.websiteImm} target="_blank" rel="noreferrer">IMM 官方主页 ↗</a>}
+                {person.data.websitePumc && <a class="inline-block rounded-lg bg-emerald-600 px-3 py-2 font-semibold text-white hover:bg-emerald-700" href={person.data.websitePumc} target="_blank" rel="noreferrer">PUMC 官方主页 ↗</a>}
+                {!person.data.websiteImm && !person.data.websitePumc && person.data.website && <a class="inline-block font-semibold text-indigo-600 hover:underline" href={person.data.website} target="_blank" rel="noreferrer">个人主页 ↗</a>}
+              </div>
+            </div>
+          </div>
+          <div class="p-8 md:p-12">
+            <span class="text-xs font-bold uppercase tracking-[.2em] text-emerald-700">{roleLabels[person.data.role] || person.data.role}</span>
+            <h1 class="mt-4 text-5xl font-bold tracking-tight text-slate-950">{person.data.name}</h1>
+            {person.data.nameEn && <p class="mt-2 text-xl text-slate-500">{person.data.nameEn}</p>}
+            {person.data.position && <p class="mt-5 font-semibold text-indigo-700">{person.data.position}</p>}
+            {person.data.researchInterest && <div class="mt-8 rounded-2xl border border-indigo-100 bg-indigo-50 p-5"><h2 class="text-sm font-bold text-indigo-800">研究方向</h2><p class="mt-2 whitespace-pre-line leading-relaxed text-slate-700">{person.data.researchInterest}</p></div>}
+            <div class="member-content mt-9 text-slate-700"><Content /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <div class="mb-6 flex items-end justify-between"><div><span class="text-xs font-bold uppercase tracking-[.2em] text-indigo-600">Publications</span><h2 class="mt-2 text-3xl font-bold text-slate-950">相关论文</h2></div><span class="text-sm text-slate-500">{publications.length} 篇</span></div>
+      {publications.length ? <div class="space-y-5">{publications.map((publication) => <PublicationItem {...publication} />)}</div> : <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">后台论文的“本组作者”中尚未关联该成员。</div>}
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .member-content :global(h2){margin-top:1.75rem;font-size:1.25rem;font-weight:700;color:#172033}.member-content :global(p){margin-top:.8rem;white-space:pre-line;line-height:1.8}.member-content :global(ul){margin-top:.8rem;list-style:disc;padding-left:1.25rem}.member-content :global(li){margin-top:.35rem;white-space:pre-line}
+</style>

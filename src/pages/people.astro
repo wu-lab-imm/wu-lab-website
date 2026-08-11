@@ -19,6 +19,11 @@ const masters = sortedPeople.filter(p => p.data.role === 'Master');
 const researchAssistants = sortedPeople.filter(p => p.data.role === 'ResearchAssistant');
 const undergrads = sortedPeople.filter(p => p.data.role === 'Undergraduate');
 const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const piCareer = (pi[0]?.data.career || []).map((item) => {
+  const [period, ...details] = item.split('|');
+  return { period: period.trim(), detail: details.join('|').trim() };
+});
 ---
 
 <style>
@@ -73,19 +78,19 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
                 <div class="relative w-full">
                   <div class="absolute inset-0 bg-amber-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl"></div>
                   <img
-                    src="https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png"
-                    alt="吴惊香"
+                    src={pi[0].data.photo || "https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png"}
+                    alt={pi[0].data.name}
                     class="relative w-full h-auto object-contain rounded-2xl shadow-lg"
                   />
                 </div>
                 <!-- 照片下方联系信息 -->
                 <div class="mt-6 space-y-2 w-full max-w-[200px]">
-                  <p class="text-sm text-gray-600"><span class="font-medium">职称：</span>助理教授</p>
-                  <p class="text-sm text-gray-600"><span class="font-medium">导师类别：</span>博士生导师</p>
-                  <p class="text-sm text-gray-600"><span class="font-medium">科室：</span>天然药物活性物质与功能国家重点实验室</p>
+                  <p class="text-sm text-gray-600"><span class="font-medium">职称：</span>{pi[0].data.position?.split(/[，,/]/)[0] || '研究员'}</p>
+                  <p class="text-sm text-gray-600"><span class="font-medium">导师类别：</span>{pi[0].data.advisorCategory || pi[0].data.position?.split(/[，,/]/)[1]?.trim() || '博士生导师'}</p>
+                  <p class="text-sm text-gray-600"><span class="font-medium">科室：</span>{pi[0].data.department || '天然药物活性物质与功能国家重点实验室'}</p>
                   <p class="text-sm text-gray-600">
                     <span class="font-medium">联系：</span>
-                    <a href="mailto:wujingxiang@imm.ac.cn" class="text-amber-600 hover:text-amber-700">wujingxiang@imm.ac.cn</a>
+                    <a href={`mailto:${pi[0].data.email}`} class="text-amber-600 hover:text-amber-700">{pi[0].data.email}</a>
                   </p>
                 </div>
               </div>
@@ -94,8 +99,9 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
               <div class="lg:col-span-3 p-8 flex flex-col">
                 <!-- 姓名和职称 -->
                 <div class="mb-6">
-                  <h3 class="text-4xl font-display font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors duration-300">吴惊香 <span class="text-xl font-normal text-gray-400">（Jingxiang Wu）</span></h3>
-                  <p class="text-xl text-amber-600 font-medium">研究员/博士生导师</p>
+                  <h3 class="text-4xl font-display font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors duration-300">{pi[0].data.name} <span class="text-xl font-normal text-gray-400">（{pi[0].data.nameEn}）</span></h3>
+                  <p class="text-xl text-amber-600 font-medium">{pi[0].data.position || '研究员/博士生导师'}</p>
+                  <div class="mt-4 flex flex-wrap gap-2"><a href={`${base}/people/${pi[0].slug}`} class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">查看完整个人主页 →</a>{pi[0].data.websiteImm && <a href={pi[0].data.websiteImm} target="_blank" class="rounded-lg border border-indigo-200 px-4 py-2 text-sm font-semibold text-indigo-700">IMM 官方主页 ↗</a>}{pi[0].data.websitePumc && <a href={pi[0].data.websitePumc} target="_blank" class="rounded-lg border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700">PUMC 官方主页 ↗</a>}</div>
                 </div>
 
                 <!-- 研究内容 -->
@@ -104,8 +110,8 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
                     <span class="w-8 h-px bg-amber-500 mr-3"></span>
                     主要研究内容
                   </h4>
-                  <p class="text-gray-600 leading-relaxed text-base">
-                    长期从事疾病相关药物靶点蛋白的结构药理学研究，并基于结构研发药物。解析了神经系统疾病靶标——去甲肾上腺素转运体NET底物识别机制和抗抑郁药瑞达法辛药物作用机制；确定了代谢门控药靶KATP的组装模式，阐述了磺酰脲类和格列奈类药物的降糖机制；揭示了甲状腺氧化酶和脑特异激酶的调控机制；为相应靶标的药物研发提供了结构基础。承担6项国家和省部级科研课题，在Nature、Cell等杂志发表论文20余篇。参编教材1部，专著1部。
+                  <p class="whitespace-pre-line text-gray-600 leading-relaxed text-base">
+                    {pi[0].data.bio || pi[0].data.researchInterest}
                   </p>
                 </div>
 
@@ -116,21 +122,11 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
                     教育/科研经历
                   </h4>
                   <div class="relative pl-6 border-l-2 border-amber-400 space-y-4">
-                    <div class="relative">
+                    {piCareer.map((item) => <div class="relative">
                       <div class="absolute -left-[31px] top-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-white"></div>
-                      <p class="font-bold text-gray-900">2022 至今</p>
-                      <p class="text-gray-600">中国医学科学院药物研究所 · 研究员/博士生导师</p>
-                    </div>
-                    <div class="relative">
-                      <div class="absolute -left-[31px] top-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-white"></div>
-                      <p class="font-bold text-gray-900">2016 - 2022</p>
-                      <p class="text-gray-600">北京大学未来技术学院 · 博士后</p>
-                    </div>
-                    <div class="relative">
-                      <div class="absolute -left-[31px] top-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-white"></div>
-                      <p class="font-bold text-gray-900">2009 - 2016</p>
-                      <p class="text-gray-600">清华大学 · 博士</p>
-                    </div>
+                      <p class="font-bold text-gray-900">{item.period}</p>
+                      {item.detail && <p class="text-gray-600">{item.detail}</p>}
+                    </div>)}
                   </div>
                 </div>
 
@@ -182,6 +178,7 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {researchAssistants.map((person) => (
               <PersonCard
+                slug={person.slug}
                 name={person.data.name}
                 nameEn={person.data.nameEn}
                 role={person.data.role}
@@ -208,6 +205,7 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {postdocs.map((person) => (
               <PersonCard
+                slug={person.slug}
                 name={person.data.name}
                 nameEn={person.data.nameEn}
                 role={person.data.role}
@@ -234,6 +232,7 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {phds.map((person) => (
               <PersonCard
+                slug={person.slug}
                 name={person.data.name}
                 nameEn={person.data.nameEn}
                 role={person.data.role}
@@ -260,6 +259,7 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {masters.map((person) => (
               <PersonCard
+                slug={person.slug}
                 name={person.data.name}
                 nameEn={person.data.nameEn}
                 role={person.data.role}
@@ -286,12 +286,41 @@ const alumni = sortedPeople.filter(p => p.data.role === 'Alumni');
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {undergrads.map((person) => (
               <PersonCard
+                slug={person.slug}
                 name={person.data.name}
                 nameEn={person.data.nameEn}
                 role={person.data.role}
                 photo={person.data.photo}
                 email={person.data.email}
                 researchInterest={person.data.researchInterest}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {alumni.length > 0 && (
+      <section class="py-16 border-t border-slate-200 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <h2 class="text-2xl md:text-3xl font-bold"><span class="text-gray-900">已毕业 / 已离开成员</span><span class="text-gray-300 mx-3">|</span><span class="text-emerald-700">Alumni</span></h2>
+            <p class="text-sm text-slate-500">感谢每一位曾与 Wu Lab 共同成长的成员</p>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {alumni.map((person) => (
+              <PersonCard
+                slug={person.slug}
+                name={person.data.name}
+                nameEn={person.data.nameEn}
+                role={person.data.role}
+                photo={person.data.photo}
+                email={person.data.email}
+                researchInterest={person.data.researchInterest}
+                startYear={person.data.startYear}
+                graduationYear={person.data.graduationYear}
+                position={person.data.position}
+                positionEn={person.data.positionEn}
               />
             ))}
           </div>
