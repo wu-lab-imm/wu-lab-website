@@ -7,6 +7,13 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  prefetch: {
+    // Cache ordinary internal links on intent. Main navigation links opt into
+    // the stronger `load` strategy in Header.astro so slow GitHub routes are
+    // usually resolved before the visitor clicks them.
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   integrations: [tailwind()],
   markdown: {
     shikiConfig: {

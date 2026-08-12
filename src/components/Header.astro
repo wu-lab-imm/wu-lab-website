@@ -25,10 +25,12 @@ const languageHref = lang === 'en'
 const homeHref = `${prefix}/`;
 ---
 
+<div id="navigation-progress" aria-hidden="true"></div>
+
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100" id="main-header">
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
     <!-- Logo - Artistic text with glow effect -->
-    <a href={homeHref} class="flex items-center gap-3" aria-label={lang === 'en' ? 'Wu Lab home' : 'Wu Lab 首页'}>
+    <a href={homeHref} data-astro-prefetch="load" class="flex items-center gap-3" aria-label={lang === 'en' ? 'Wu Lab home' : 'Wu Lab 首页'}>
       <img src={`${base}/favicon.svg`} width="38" height="38" alt="" class="rounded-xl shadow-sm" />
       <span class="wu-lab-logo">
         <span class="wu-lab-main">Wu Lab</span>
@@ -96,6 +98,7 @@ const homeHref = `${prefix}/`;
       {navLinks.map(item => (
         <a
           href={item.href}
+          data-astro-prefetch="load"
           class:list={[
             'px-3 py-1.5 text-sm font-medium tracking-wider transition-colors duration-200',
             currentPath === item.href.replace(/\/$/, '') || (item.href !== homeHref && currentPath.startsWith(item.href))
@@ -106,7 +109,7 @@ const homeHref = `${prefix}/`;
           {item.label}
         </a>
       ))}
-      <a href={languageHref} class="ml-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100">{lang === 'en' ? '中文' : 'EN'}</a>
+      <a href={languageHref} data-astro-prefetch="load" class="ml-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100">{lang === 'en' ? '中文' : 'EN'}</a>
     </div>
 
     <!-- Mobile Menu Button -->
@@ -127,6 +130,7 @@ const homeHref = `${prefix}/`;
       {navLinks.map(item => (
         <a
           href={item.href}
+          data-astro-prefetch="load"
           class:list={[
             'block px-4 py-3 text-base font-medium transition-colors',
             currentPath === item.href.replace(/\/$/, '')
@@ -137,10 +141,45 @@ const homeHref = `${prefix}/`;
           {item.label}
         </a>
       ))}
-      <a href={languageHref} class="block px-4 py-3 text-base font-bold text-indigo-700">{lang === 'en' ? '切换到中文' : 'English'}</a>
+      <a href={languageHref} data-astro-prefetch="load" class="block px-4 py-3 text-base font-bold text-indigo-700">{lang === 'en' ? '切换到中文' : 'English'}</a>
     </div>
   </div>
 </header>
+
+<style is:global>
+  #navigation-progress {
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 100;
+    width: 100%;
+    height: 3px;
+    pointer-events: none;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: linear-gradient(90deg, #4f46e5, #10b981);
+    box-shadow: 0 0 10px rgb(79 70 229 / 45%);
+  }
+
+  #navigation-progress.is-loading {
+    opacity: 1;
+    animation: navigation-progress 10s cubic-bezier(.1, .7, .2, 1) forwards;
+  }
+
+  @keyframes navigation-progress {
+    0% { transform: scaleX(.03); }
+    20% { transform: scaleX(.45); }
+    60% { transform: scaleX(.78); }
+    100% { transform: scaleX(.94); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #navigation-progress.is-loading {
+      animation: none;
+      transform: scaleX(.8);
+    }
+  }
+</style>
 
 <script>
   // 移动端菜单切换
@@ -148,5 +187,22 @@ const homeHref = `${prefix}/`;
   const mobileMenu = document.getElementById('mobile-menu');
   mobileMenuBtn?.addEventListener('click', () => {
     mobileMenu?.classList.toggle('hidden');
+  });
+
+  // Give immediate feedback while a slow network fetches the next static page.
+  const navigationProgress = document.getElementById('navigation-progress');
+  document.addEventListener('click', (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    const target = event.target;
+    const link = target instanceof Element ? target.closest<HTMLAnchorElement>('a[href]') : null;
+    if (!link || link.target === '_blank' || link.hasAttribute('download')) return;
+
+    const next = new URL(link.href, window.location.href);
+    const current = new URL(window.location.href);
+    const sameDocument = next.origin === current.origin && next.pathname === current.pathname && next.search === current.search;
+    if (next.origin !== current.origin || sameDocument) return;
+
+    navigationProgress?.classList.add('is-loading');
   });
 </script>
