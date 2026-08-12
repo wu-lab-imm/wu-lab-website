@@ -77,7 +77,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
               data-full-image={canZoom ? fullImageList[index] : undefined}
               data-clear-image={imageDisplay === 'wide' ? imageList[index] : undefined}
               loading={priority && index === 0 ? 'eager' : 'lazy'}
-              fetchpriority={priority && index === 0 ? 'high' : 'auto'}
+              fetchpriority={priority && index === 0 ? 'high' : 'low'}
               decoding="async"
             />
           ))}
@@ -89,6 +89,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
             data-full-image={canZoom ? fullImageList[0] : undefined}
             data-clear-image={imageDisplay === 'wide' ? imageList[0] : undefined}
             loading="lazy"
+            fetchpriority="low"
             decoding="async"
           />
         </div>
@@ -185,7 +186,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
               data-full-image={canZoom ? fullImageList[index] : undefined}
               data-clear-image={imageDisplay === 'wide' ? imageList[index] : undefined}
               loading={priority && index === 0 ? 'eager' : 'lazy'}
-              fetchpriority={priority && index === 0 ? 'high' : 'auto'}
+              fetchpriority={priority && index === 0 ? 'high' : 'low'}
               decoding="async"
             />
           ))}
@@ -197,6 +198,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
             data-full-image={canZoom ? fullImageList[0] : undefined}
             data-clear-image={imageDisplay === 'wide' ? imageList[0] : undefined}
             loading="lazy"
+            fetchpriority="low"
             decoding="async"
           />
         </div>
