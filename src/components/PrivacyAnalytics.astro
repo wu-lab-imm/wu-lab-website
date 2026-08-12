@@ -1,0 +1,37 @@
+---
+// Cloudflare Web Analytics is enabled only when the deployment supplies a site
+// token. The beacon is loaded after the page has finished loading so analytics
+// can never hold up visible content or images on a slow network.
+const token = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN?.trim();
+const beaconConfig = token ? JSON.stringify({ token, spa: false }) : '';
+---
+
+{token && (
+  <script is:inline define:vars={{ beaconConfig }}>
+    (() => {
+      let started = false;
+
+      const loadBeacon = () => {
+        if (started) return;
+        started = true;
+
+        const beacon = document.createElement('script');
+        beacon.type = 'module';
+        beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        beacon.setAttribute('data-cf-beacon', beaconConfig);
+        document.body.appendChild(beacon);
+      };
+
+      const scheduleBeacon = () => {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadBeacon, { timeout: 3000 });
+        } else {
+          window.setTimeout(loadBeacon, 0);
+        }
+      };
+
+      if (document.readyState === 'complete') scheduleBeacon();
+      else window.addEventListener('load', scheduleBeacon, { once: true });
+    })();
+  </script>
+)}

@@ -102,3 +102,18 @@ https://wu-lab-imm.github.io/wu-lab-website/
 ## 外网发布原理
 
 公网使用 GitHub Pages 上的静态文件，不依赖实验室服务器持续在线。服务器只保存源代码、图片和内网编辑工具。后续维护者需要服务器 SSH 权限和 GitHub 仓库写入权限。
+
+## 隐私友好的访问统计
+
+官网已预留 Cloudflare Web Analytics。它不使用 Cookie，不在浏览器保存统计标识，不用于识别具体访客。统计脚本在页面和图片加载完成后才启动；统计服务不可用或被浏览器拦截时，不影响网站浏览。
+
+首次启用需要仓库管理员完成一次配置：
+
+1. 登录 Cloudflare，进入 **Web Analytics → Add a site**，站点主机名填写 `wu-lab-imm.github.io`。
+2. 从 Cloudflare 给出的 JavaScript 代码中复制站点 `token`。只复制站点令牌，不要复制 Cloudflare API Token 或账号密码。
+3. 进入 GitHub 仓库 **Settings → Secrets and variables → Actions → Variables**，新建仓库变量：
+   - Name：`CLOUDFLARE_ANALYTICS_TOKEN`
+   - Value：Cloudflare 站点令牌
+4. 在 GitHub Actions 中重新运行最近一次部署，或等待下一次内容更新自动部署。
+
+变量未设置时统计代码不会出现在网页中，但构建和发布仍会正常完成。启用后在 Cloudflare Web Analytics 查看访问量、热门页面、来源、国家或地区、设备类型和浏览器等聚合数据；它不会提供访客姓名、账号或可供逐人追踪的访问记录。广告拦截器可能阻止统计，因此数据属于合理估算而不是服务器日志式的绝对计数。

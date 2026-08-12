@@ -15,6 +15,7 @@ const quickLinks = [
 ];
 
 const currentYear = new Date().getFullYear();
+const analyticsEnabled = Boolean(import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN?.trim());
 ---
 
 <footer class="bg-white border-t border-gray-100">
@@ -85,7 +86,14 @@ const currentYear = new Date().getFullYear();
 
       <!-- Copyright -->
       <div class="text-xs text-gray-400">
-        &copy; {currentYear} Wu Lab
+        <div>&copy; {currentYear} Wu Lab</div>
+        {analyticsEnabled && (
+          <div class="mt-1">
+            {lang === 'en'
+              ? 'Privacy-friendly, cookieless anonymous traffic statistics'
+              : '使用无 Cookie、隐私友好的匿名访问统计'}
+          </div>
+        )}
       </div>
     </div>
   </div>

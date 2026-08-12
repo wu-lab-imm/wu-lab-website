@@ -1,6 +1,7 @@
 ---
 // 导入全局样式
 import '../styles/global.css';
+import PrivacyAnalytics from '../components/PrivacyAnalytics.astro';
 
 // 定义布局属性
 interface Props {
@@ -28,5 +29,6 @@ const faviconHref = `${base}/favicon.svg`;
   </head>
   <body class="bg-white text-gray-900 font-body antialiased">
     <slot />
+    <PrivacyAnalytics />
   </body>
 </html>
