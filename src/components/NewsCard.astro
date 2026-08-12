@@ -324,9 +324,34 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
     const nextBtn = container.querySelector('.carousel-next');
     const dots = container.querySelectorAll('[data-carousel-dot]');
     const images = container.querySelectorAll('[data-carousel-index]');
-    const totalImages = images.length; // 包括末尾的克隆图片
+    const previewImages = Array.from(images);
+    const slideImages = previewImages.slice(0, imageListLength);
 
     let currentIndex = 0;
+    let previewPreparationStarted = false;
+    const isSlideReady = (index) => slideImages[index]?.dataset.previewReady === 'true';
+    const allSlidesReady = () => previewImages.every((image) => image.dataset.previewReady === 'true');
+
+    // 轮播进入屏幕附近时主动准备这一组的小预览图。只有图片完成加载和
+    // 解码后才标记为可展示，避免慢网下切换到尚未绘制的空白位置。
+    const preparePreviewImages = () => {
+      if (previewPreparationStarted) return;
+      previewPreparationStarted = true;
+      previewImages.forEach((image) => {
+        const markReady = () => {
+          image.dataset.previewReady = 'true';
+          startAutoPlay();
+        };
+        const decodeAndMark = async () => {
+          if (!image.complete || !image.naturalWidth) return;
+          try { await image.decode(); } catch {}
+          markReady();
+        };
+        image.addEventListener('load', decodeAndMark, { once: true });
+        image.loading = 'eager';
+        decodeAndMark();
+      });
+    };
 
     const updateCarousel = () => {
       images.forEach((img, i) => {
@@ -343,6 +368,8 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
     };
 
     const nextImage = () => {
+      const nextIndex = currentIndex >= imageListLength - 1 ? 0 : currentIndex + 1;
+      if (!isSlideReady(nextIndex)) return false;
       currentIndex++;
       // 动画到克隆图片
       images.forEach((img) => {
@@ -360,9 +387,12 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
           updateCarousel();
         }, 500);
       }
+      return true;
     };
 
     const prevImage = () => {
+      const previousIndex = currentIndex === 0 ? imageListLength - 1 : currentIndex - 1;
+      if (!isSlideReady(previousIndex)) return false;
       // 如果在第一张，直接跳到最后一张（克隆位置）无动画
       if (currentIndex === 0) {
         currentIndex = imageListLength;
@@ -370,13 +400,14 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
           img.style.transition = 'none';
           img.style.transform = `translateX(-${currentIndex * 100}%)`;
         });
-        return;
+        return true;
       }
       currentIndex--;
       images.forEach((img) => {
         img.style.transition = 'transform 0.5s ease-in-out';
       });
       updateCarousel();
+      return true;
     };
 
     if (prevBtn) prevBtn.addEventListener('click', (event) => {
@@ -394,6 +425,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
       dot.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        if (!isSlideReady(i)) return;
         currentIndex = i;
         images.forEach((img) => {
           img.style.transition = 'transform 0.5s ease-in-out';
@@ -413,19 +445,23 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
       autoPlayInterval = undefined;
     };
     const startAutoPlay = () => {
-      if (autoPlayInterval || !carouselVisible || pointerInside || document.hidden) return;
+      if (autoPlayInterval || !carouselVisible || pointerInside || document.hidden || !allSlidesReady()) return;
       autoPlayInterval = setInterval(nextImage, 5000);
     };
 
     if ('IntersectionObserver' in window) {
       const carouselObserver = new IntersectionObserver(([entry]) => {
         carouselVisible = entry.isIntersecting;
-        if (carouselVisible) startAutoPlay();
+        if (carouselVisible) {
+          preparePreviewImages();
+          startAutoPlay();
+        }
         else stopAutoPlay();
-      }, { threshold: 0.1 });
+      }, { rootMargin: '300px', threshold: 0.01 });
       carouselObserver.observe(container);
     } else {
       carouselVisible = true;
+      preparePreviewImages();
       startAutoPlay();
     }
 
