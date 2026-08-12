@@ -6,6 +6,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PersonCard from '../components/PersonCard.astro';
 import { getCollection } from 'astro:content';
+import { imageFallbackUrl, imageUrl } from '../lib/images';
 
 // 获取所有团队成员
 const allPeople = await getCollection('people');
@@ -78,7 +79,8 @@ const piCareer = (pi[0]?.data.career || []).map((item) => {
                 <div class="relative w-full">
                   <div class="absolute inset-0 bg-amber-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl"></div>
                   <img
-                    src={pi[0].data.photo || "https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png"}
+                    src={imageUrl(pi[0].data.photo || "https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png")}
+                    data-origin-src={imageFallbackUrl(pi[0].data.photo || '')}
                     alt={pi[0].data.name}
                     class="relative w-full h-auto object-contain rounded-2xl shadow-lg"
                     loading="eager"

@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
+import { imageFallbackUrl, imageUrl } from '../lib/images';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -12,7 +13,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const allResearch = await getCollection('research');
 const researchItems = allResearch
   .sort((a, b) => a.data.order - b.data.order);
-const imageUrl = (path: string) => path.startsWith(base + '/') ? path : path.startsWith('/images/') ? base + path : path;
 ---
 
 <Layout title="研究方向" description="了解Wu Lab的研究方向，包括代谢类疾病、神经系统疾病、氧化酶和激酶研究">
@@ -43,6 +43,7 @@ const imageUrl = (path: string) => path.startsWith(base + '/') ? path : path.sta
                   {item.data.image ? (
                     <img
                       src={imageUrl(item.data.image)}
+                      data-origin-src={imageFallbackUrl(item.data.image)}
                       alt={item.data.title}
                       class="w-full h-auto max-h-[500px] object-contain"
                       loading="lazy"

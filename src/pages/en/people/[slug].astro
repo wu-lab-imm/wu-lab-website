@@ -5,6 +5,7 @@ import Footer from '../../../components/Footer.astro';
 import PublicationItem from '../../../components/PublicationItem.astro';
 import { getCollection } from 'astro:content';
 import { visiblePublications } from '../../../publications';
+import { imageFallbackUrl, imageUrl } from '../../../lib/images';
 
 export async function getStaticPaths() {
   const people = await getCollection('people');
@@ -63,7 +64,8 @@ const positionLabel = isAlumni ? person.data.positionEn : person.data.positionEn
           <aside class="bg-gradient-to-br from-indigo-50 to-emerald-50 p-8">
             <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-white shadow-lg">
               <img
-                src={photo}
+                src={imageUrl(photo)}
+                data-origin-src={imageFallbackUrl(photo)}
                 alt={displayName}
                 class:list={['h-full w-full', person.data.photo || isPi ? 'object-cover object-top' : 'object-contain p-16']}
                 loading="eager"

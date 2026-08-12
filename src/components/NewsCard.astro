@@ -1,5 +1,6 @@
 ---
 // NewsCard 组件 - 新闻卡片 (学术精致风格)
+import { imageFallbackUrl, imageUrl, originImageUrl } from '../lib/images';
 
 interface Props {
   date: string;
@@ -51,11 +52,15 @@ const hasMultipleImages = imageList.length > 1;
 const thumbnailFor = (path: string) => (imageDisplay === 'card' || imageDisplay === 'wide') && path.includes('/images/news/')
   ? path.replace(/\.(?:jpe?g|png|webp)$/i, '.thumb.webp')
   : path;
-const displayImageList = imageList.map(thumbnailFor);
+const displayImagePaths = imageList.map(thumbnailFor);
+const displayImageList = displayImagePaths.map(imageUrl);
 const fullImageFor = (path: string) => path.includes('/images/news/')
   ? path.replace(/\.(?:jpe?g|png|webp)$/i, '.full.webp')
   : path;
-const fullImageList = imageList.map(fullImageFor);
+const fullImagePaths = imageList.map(fullImageFor);
+const fullImageList = fullImagePaths.map(imageUrl);
+const fullOriginList = fullImagePaths.map(originImageUrl);
+const clearImageList = imageList.map(imageUrl);
 
 // 生成唯一ID用于轮播
 const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
@@ -71,11 +76,13 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
           {displayImageList.map((img, index) => (
             <img
               src={img}
+              data-origin-src={imageFallbackUrl(displayImagePaths[index])}
               alt={`${title} - ${index + 1}`}
               class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
               data-carousel-index={index}
               data-full-image={canZoom ? fullImageList[index] : undefined}
-              data-clear-image={imageDisplay === 'wide' ? imageList[index] : undefined}
+              data-full-origin={canZoom ? fullOriginList[index] : undefined}
+              data-clear-image={imageDisplay === 'wide' ? clearImageList[index] : undefined}
               loading={priority && index === 0 ? 'eager' : 'lazy'}
               fetchpriority={priority && index === 0 ? 'high' : 'low'}
               decoding="async"
@@ -83,11 +90,13 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
           ))}
           <img
             src={displayImageList[0]}
+            data-origin-src={imageFallbackUrl(displayImagePaths[0])}
             alt={`${title} - 1`}
             class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
             data-carousel-index="clone"
             data-full-image={canZoom ? fullImageList[0] : undefined}
-            data-clear-image={imageDisplay === 'wide' ? imageList[0] : undefined}
+            data-full-origin={canZoom ? fullOriginList[0] : undefined}
+            data-clear-image={imageDisplay === 'wide' ? clearImageList[0] : undefined}
             loading="lazy"
             fetchpriority="low"
             decoding="async"
@@ -180,11 +189,13 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
           {displayImageList.map((img, index) => (
             <img
               src={img}
+              data-origin-src={imageFallbackUrl(displayImagePaths[index])}
               alt={`${title} - ${index + 1}`}
               class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
               data-carousel-index={index}
               data-full-image={canZoom ? fullImageList[index] : undefined}
-              data-clear-image={imageDisplay === 'wide' ? imageList[index] : undefined}
+              data-full-origin={canZoom ? fullOriginList[index] : undefined}
+              data-clear-image={imageDisplay === 'wide' ? clearImageList[index] : undefined}
               loading={priority && index === 0 ? 'eager' : 'lazy'}
               fetchpriority={priority && index === 0 ? 'high' : 'low'}
               decoding="async"
@@ -192,11 +203,13 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
           ))}
           <img
             src={displayImageList[0]}
+            data-origin-src={imageFallbackUrl(displayImagePaths[0])}
             alt={`${title} - 1`}
             class:list={['w-full h-full flex-shrink-0 transition-transform duration-500 ease-in-out', imageFitClass, canZoom ? 'cursor-zoom-in' : '']}
             data-carousel-index="clone"
             data-full-image={canZoom ? fullImageList[0] : undefined}
-            data-clear-image={imageDisplay === 'wide' ? imageList[0] : undefined}
+            data-full-origin={canZoom ? fullOriginList[0] : undefined}
+            data-clear-image={imageDisplay === 'wide' ? clearImageList[0] : undefined}
             loading="lazy"
             fetchpriority="low"
             decoding="async"
@@ -274,7 +287,7 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
 )}
 
 <!-- 轮播脚本 -->
-<script define:vars={{ carouselId, imageListLength: imageList.length, enableZoom: canZoom, enableProgressive: imageDisplay === 'wide' }}>
+<script define:vars={{ carouselId, imageListLength: imageList.length, enableProgressive: imageDisplay === 'wide' }}>
   const zoomContainer = document.querySelector(`[data-carousel="${carouselId}"]`);
   if (enableProgressive && zoomContainer) {
     const loadClearImage = (image) => {
@@ -307,16 +320,6 @@ const carouselId = `carousel-${title.replace(/\s+/g, '-').slice(0, 20)}`;
       progressiveImages.forEach(loadClearImage);
     }
   }
-  if (enableZoom && zoomContainer) {
-    zoomContainer.querySelectorAll('[data-full-image]').forEach((image) => {
-      image.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        window.open(image.dataset.fullImage, '_blank', 'noopener,noreferrer');
-      });
-    });
-  }
-
   // 只在有多个图片时初始化轮播
   if (imageListLength > 1) {
     const container = zoomContainer;

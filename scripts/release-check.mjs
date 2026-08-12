@@ -43,6 +43,9 @@ for (const file of sourceFiles) {
   for (const match of text.matchAll(/\$\{base\}\/(images\/[A-Za-z0-9._~!&'()*+,;=:@%/-]+\.(?:avif|gif|jpe?g|png|svg|webp))/gi)) {
     referencedImages.add(match[1]);
   }
+  for (const match of text.matchAll(/["'`](\/images\/[A-Za-z0-9._~!&'()*+,;=:@%/-]+\.(?:avif|gif|jpe?g|png|svg|webp))/gi)) {
+    referencedImages.add(match[1].slice(1));
+  }
 }
 
 // News cards use generated 800 px thumbnails, detail pages use the larger

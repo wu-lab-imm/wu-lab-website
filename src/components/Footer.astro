@@ -1,5 +1,6 @@
 ---
 // Footer 组件 - 页脚 (简洁学术风格)
+import { imageFallbackUrl, imageUrl } from '../lib/images';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 interface Props { lang?: 'zh' | 'en' }
 const { lang = 'zh' } = Astro.props;
@@ -33,7 +34,8 @@ const analyticsEnabled = Boolean(import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOK
           aria-label={lang === 'en' ? 'Visit the PUMC official website' : '访问中国医学科学院北京协和医学院官网'}
         >
           <img
-            src={`${base}/images/institutions/pumc-logo.png`}
+            src={imageUrl('/images/institutions/pumc-logo.png')}
+            data-origin-src={imageFallbackUrl('/images/institutions/pumc-logo.png')}
             alt={lang === 'en' ? 'CAMS & PUMC logo' : '中国医学科学院北京协和医学院徽标'}
             class="h-16 w-full object-contain"
             loading="lazy"
@@ -50,7 +52,8 @@ const analyticsEnabled = Boolean(import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOK
           aria-label={lang === 'en' ? 'Visit the IMM official website' : '访问中国医学科学院药物研究所官网'}
         >
           <img
-            src={`${base}/images/institutions/imm-logo.png`}
+            src={imageUrl('/images/institutions/imm-logo.png')}
+            data-origin-src={imageFallbackUrl('/images/institutions/imm-logo.png')}
             alt={lang === 'en' ? 'Institute of Materia Medica logo' : '中国医学科学院药物研究所徽标'}
             class="h-16 w-full object-contain"
             loading="lazy"
