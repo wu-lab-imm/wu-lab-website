@@ -1,5 +1,6 @@
 ---
 // PersonCard 组件 - 人员卡片 (无角色标签)
+import { imageFallbackUrl, imageUrl } from '../lib/images';
 
 interface Props {
   name: string;
@@ -26,7 +27,8 @@ const alumniDestination = lang === 'en' ? positionEn : position;
 // 默认头像
 const defaultPhoto = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 16 16'%3E%3Crect fill='%23e5e5e5' width='16' height='16'/%3E%3Cg opacity='0.5'%3E%3Crect fill='%2399' x='4' y='4' width='8' height='6'/%3E%3Ccircle fill='%23666' cx='6' cy='6' r='1'/%3E%3Ccircle fill='%23666' cx='10' cy='6' r='1'/%3E%3Crect fill='%23666' x='6' y='7' width='4' height='1'/%3E%3Crect fill='%23999' x='5' y='10' width='2' height='3'/%3E%3Crect fill='%23999' x='9' y='10' width='2' height='3'/%3E%3C/g%3E%3C/svg%3E";
 
-const displayPhoto = photo || defaultPhoto;
+const photoPath = photo || defaultPhoto;
+const displayPhoto = imageUrl(photoPath);
 // YAML keeps paragraph breaks but browsers normally collapse them. The card
 // intentionally uses only the first non-empty paragraph as its short summary.
 const researchLine = researchInterest?.split(/\r?\n+/).map((line) => line.trim()).find(Boolean);
@@ -37,6 +39,7 @@ const researchLine = researchInterest?.split(/\r?\n+/).map((line) => line.trim()
   <div class="relative aspect-square bg-gray-100 overflow-hidden">
     <img
       src={displayPhoto}
+      data-origin-src={imageFallbackUrl(photoPath)}
       alt={name}
       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       loading={priority ? 'eager' : 'lazy'}

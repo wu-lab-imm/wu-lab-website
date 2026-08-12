@@ -3,6 +3,8 @@ import { execFile } from 'node:child_process';
 import { readFile, readdir, writeFile, rename, mkdir } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 import { promisify } from 'node:util';
+import 'dotenv/config';
+import COS from 'cos-nodejs-sdk-v5';
 import matter from 'gray-matter';
 
 const root = resolve(import.meta.dirname, '..');
@@ -26,6 +28,11 @@ const execFileAsync = promisify(execFile);
 const autoPublishEnabled = process.env.WULAB_AUTO_PUBLISH !== 'false';
 const publishDelayMs = Number(process.env.WULAB_PUBLISH_DELAY_MS || 30_000);
 const publishablePaths = ['src/content/', 'src/join.json', 'public/images/'];
+const cosBucket = process.env.TENCENT_COS_BUCKET || 'wulab-images-1324699520';
+const cosRegion = process.env.TENCENT_COS_REGION || 'ap-beijing';
+const cosSecretId = process.env.TENCENT_COS_SECRET_ID;
+const cosSecretKey = process.env.TENCENT_COS_SECRET_KEY;
+const cosClient = cosSecretId && cosSecretKey ? new COS({ SecretId: cosSecretId, SecretKey: cosSecretKey }) : null;
 const publishState = {
   enabled: autoPublishEnabled,
   status: 'idle',
@@ -62,6 +69,32 @@ function safeId(value) {
 function slugify(value, fallback) {
   const slug = String(value || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 64);
   return slug || fallback;
+}
+
+const imageContentTypes = {
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
+};
+
+function uploadToCos(key, buffer) {
+  if (!cosClient) return Promise.reject(new Error('COS 自动同步尚未配置'));
+  return new Promise((resolveUpload, rejectUpload) => {
+    cosClient.putObject({
+      Bucket: cosBucket,
+      Region: cosRegion,
+      Key: key,
+      Body: buffer,
+      ContentType: imageContentTypes[extname(key).toLowerCase()] || 'application/octet-stream',
+      CacheControl: 'public, max-age=31536000, immutable',
+    }, (error, data) => error ? rejectUpload(error) : resolveUpload(data));
+  });
+}
+
+function cosUploadError(error) {
+  const code = error?.code || error?.error?.Code;
+  return code ? `COS 自动同步失败（${code}）` : 'COS 自动同步失败';
 }
 
 async function uniqueMarkdownId(type, data) {
@@ -337,18 +370,41 @@ async function handleApi(req, res, url) {
     // previous portrait when a maintainer uploads a replacement with the same name.
     const uniqueStem = `${stem}-${Date.now()}`;
     const filename = `${uniqueStem}${extension}`;
+    const variants = [{ filename, buffer }];
     await atomicWrite(join(directory, filename), buffer);
     if (kind === 'news' && payload.thumbnailData) {
       const thumbnail = Buffer.from(String(payload.thumbnailData).replace(/^data:image\/[^;]+;base64,/, ''), 'base64');
       if (!thumbnail.length || thumbnail.length > 2 * 1024 * 1024) throw new Error('新闻缩略图为空或超过 2 MB');
-      await atomicWrite(join(directory, `${uniqueStem}.thumb.webp`), thumbnail);
+      const thumbnailFilename = `${uniqueStem}.thumb.webp`;
+      await atomicWrite(join(directory, thumbnailFilename), thumbnail);
+      variants.push({ filename: thumbnailFilename, buffer: thumbnail });
     }
     if (kind === 'news' && payload.fullImageData) {
       const fullImage = Buffer.from(String(payload.fullImageData).replace(/^data:image\/[^;]+;base64,/, ''), 'base64');
       if (!fullImage.length || fullImage.length > 8 * 1024 * 1024) throw new Error('新闻高清图为空或超过 8 MB');
-      await atomicWrite(join(directory, `${uniqueStem}.full.webp`), fullImage);
+      const fullImageFilename = `${uniqueStem}.full.webp`;
+      await atomicWrite(join(directory, fullImageFilename), fullImage);
+      variants.push({ filename: fullImageFilename, buffer: fullImage });
     }
-    return json(res, 200, { ok: true, path: `/wu-lab-website/images/${kind}/${filename}` });
+    let cosSynced = false;
+    let cosWarning;
+    if (!cosClient) {
+      cosWarning = 'COS 自动同步尚未配置，图片已保存到本地并保留 GitHub 回退';
+    } else {
+      try {
+        await Promise.all(variants.map((variant) => uploadToCos(`images/${kind}/${variant.filename}`, variant.buffer)));
+        cosSynced = true;
+      } catch (error) {
+        console.error('COS 自动同步失败：', error?.code || error?.message || error);
+        cosWarning = `${cosUploadError(error)}，图片已保存到本地并保留 GitHub 回退`;
+      }
+    }
+    return json(res, 200, {
+      ok: true,
+      path: `/wu-lab-website/images/${kind}/${filename}`,
+      cosSynced,
+      cosWarning,
+    });
   }
 
   return json(res, 404, { error: '接口不存在' });
@@ -376,4 +432,5 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, host, () => {
   console.log(`Wu Lab 内容管理：http://${host}:${port}`);
   console.log('仅监听本机；请通过 SSH 端口转发访问。');
+  console.log(cosClient ? `COS 自动同步已启用：${cosBucket}（${cosRegion}）` : 'COS 自动同步未配置：图片仍会保存到本地并使用 GitHub 回退。');
 });

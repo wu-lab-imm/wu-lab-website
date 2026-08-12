@@ -103,6 +103,16 @@ https://wu-lab-imm.github.io/wu-lab-website/
 
 公网使用 GitHub Pages 上的静态文件，不依赖实验室服务器持续在线。服务器只保存源代码、图片和内网编辑工具。后续维护者需要服务器 SSH 权限和 GitHub 仓库写入权限。
 
+## 国内图片源
+
+公开图片优先从北京地域的腾讯云 COS 存储桶 `wulab-images-1324699520` 加载，以改善国内访问速度。内容中仍保存 `/wu-lab-website/images/...` 路径，GitHub Pages 也仍保留全部原图；COS 某张图加载失败时，浏览器会自动回退到 GitHub Pages。
+
+COS 默认域名在地址栏中会强制下载，但可以作为网页内的图片源。因此新闻高清图使用站内弹窗预览，不直接打开 COS 链接。
+
+管理后台上传新图时，会先保存到 `public/images/`，再自动把普通图、新闻缩略图和新闻高清图以相同文件名同步到 COS 的 `images/` 目录。管理页会明确显示“已同步 COS”；如果没有配置 COS 或临时同步失败，本地图片仍会保存并参与 GitHub 发布，网站会自动使用 GitHub Pages 回退，不需要重新上传。
+
+COS 写入密钥只放在管理服务器本地，不要写进网页、聊天记录或 Git。复制 `.env.example` 为 `.env`，填写 `TENCENT_COS_SECRET_ID` 和 `TENCENT_COS_SECRET_KEY`，然后重启管理后台。应使用单独的腾讯云 CAM 子用户，并把权限限制为存储桶 `wulab-images-1324699520` 下 `images/*` 的对象上传；不要使用主账号永久密钥。存储桶和地域通常保持默认值，无需修改。
+
 ## 隐私友好的访问统计
 
 官网已预留 Cloudflare Web Analytics。它不使用 Cookie，不在浏览器保存统计标识，不用于识别具体访客。统计脚本在页面和图片加载完成后才启动；统计服务不可用或被浏览器拦截时，不影响网站浏览。

@@ -30,5 +30,53 @@ const faviconHref = `${base}/favicon.svg`;
   <body class="bg-white text-gray-900 font-body antialiased">
     <slot />
     <PrivacyAnalytics />
+    <dialog id="image-viewer" class="m-auto h-screen max-h-none w-screen max-w-none border-0 bg-transparent p-4 backdrop:bg-slate-950/90">
+      <div data-image-viewer-stage class="flex h-full w-full items-center justify-center">
+        <img class="max-h-full max-w-full object-contain" alt={lang === 'en' ? 'High-resolution image preview' : '高清图片预览'} />
+      </div>
+      <button type="button" data-image-viewer-close class="fixed right-5 top-5 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-slate-800 shadow-lg">
+        {lang === 'en' ? 'Close' : '关闭'}
+      </button>
+    </dialog>
+    <script>
+      const viewer = document.querySelector<HTMLDialogElement>('#image-viewer');
+      const viewerImage = viewer?.querySelector<HTMLImageElement>('img');
+
+      document.addEventListener('error', (event) => {
+        const image = event.target;
+        if (!(image instanceof HTMLImageElement)) return;
+        const fallback = image.dataset.originSrc;
+        if (!fallback) return;
+        delete image.dataset.originSrc;
+        image.src = fallback;
+      }, true);
+
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const image = target.closest('img[data-full-image]');
+        if (!(image instanceof HTMLImageElement) || !viewer || !viewerImage) return;
+        event.preventDefault();
+        event.stopPropagation();
+        viewerImage.src = image.dataset.fullImage || image.src;
+        viewerImage.dataset.originSrc = image.dataset.fullOrigin || '';
+        document.documentElement.style.overflow = 'hidden';
+        viewer.showModal();
+      });
+
+      const closeViewer = () => viewer?.close();
+      viewer?.querySelector('[data-image-viewer-close]')?.addEventListener('click', closeViewer);
+      viewer?.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target === viewer || (target instanceof Element && target.hasAttribute('data-image-viewer-stage'))) closeViewer();
+      });
+      viewer?.addEventListener('close', () => {
+        document.documentElement.style.overflow = '';
+        if (viewerImage) {
+          viewerImage.removeAttribute('src');
+          delete viewerImage.dataset.originSrc;
+        }
+      });
+    </script>
   </body>
 </html>
