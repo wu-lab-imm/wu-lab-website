@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import PublicationItem from '../../../components/PublicationItem.astro';
+import ShiqiCursorPet from '../../../components/profiles/ShiqiCursorPet.astro';
 import { getCollection } from 'astro:content';
 import { visiblePublications } from '../../../publications';
 import { imageFallbackUrl, imageUrl } from '../../../lib/images';
@@ -51,6 +52,7 @@ const career = (person.data.careerEn || []).map((entry) => {
 });
 const fields = person.data.subjectFieldsEn || [];
 const positionLabel = isAlumni ? person.data.positionEn : person.data.positionEn;
+const isShiqiProfile = person.slug === 'phd-3';
 ---
 
 <Layout lang="en" title={`${displayName} - People`} description={`${displayName}, ${roleLabel} at the Wu Lab`}>
@@ -91,7 +93,10 @@ const positionLabel = isAlumni ? person.data.positionEn : person.data.positionEn
           </aside>
 
           <div class="p-8 md:p-12">
-            <span class="text-xs font-bold uppercase tracking-[.2em] text-emerald-700">{roleLabel}</span>
+            <div class="flex items-start justify-between gap-4">
+              <span class="pt-3 text-xs font-bold uppercase tracking-[.2em] text-emerald-700">{roleLabel}</span>
+              {isShiqiProfile && <ShiqiCursorPet lang="en" />}
+            </div>
             <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-950 md:text-5xl">{displayName}</h1>
             {positionLabel && !isAlumni && <p class="mt-4 text-lg font-semibold text-indigo-700">{positionLabel}{person.data.advisorCategoryEn ? ` · ${person.data.advisorCategoryEn}` : ''}</p>}
 
