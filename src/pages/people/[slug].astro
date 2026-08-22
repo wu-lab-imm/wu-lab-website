@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import PublicationItem from '../../components/PublicationItem.astro';
+import ShiqiCursorPet from '../../components/profiles/ShiqiCursorPet.astro';
 import { getCollection } from 'astro:content';
 import { visiblePublications } from '../../publications';
 import { imageFallbackUrl, imageUrl } from '../../lib/images';
@@ -21,6 +22,7 @@ const publications = visiblePublications.filter((publication) => publication.lab
 const roleLabels: Record<string, string> = { PI: 'Principal Investigator', Postdoc: 'Postdoctoral Fellow', PhD: 'PhD Student', Master: 'Master Student', ResearchAssistant: 'Research Assistant', Undergraduate: 'Undergraduate', Alumni: 'Alumni' };
 const piFallbackPhoto = 'https://www.imm.ac.cn/images/2023-03/e4e5696ac2094384b1cd22c27743eb8e.png';
 const photo = person.data.photo || (person.data.role === 'PI' ? piFallbackPhoto : `${base}/favicon.svg`);
+const isShiqiProfile = person.slug === 'phd-3';
 ---
 
 <Layout title={`${person.data.name} - 团队成员`} description={`${person.data.name}，Wu Lab ${roleLabels[person.data.role] || person.data.role}`}>
@@ -44,7 +46,10 @@ const photo = person.data.photo || (person.data.role === 'PI' ? piFallbackPhoto 
             </div>
           </div>
           <div class="p-8 md:p-12">
-            <span class="text-xs font-bold uppercase tracking-[.2em] text-emerald-700">{roleLabels[person.data.role] || person.data.role}</span>
+            <div class="flex items-start justify-between gap-4">
+              <span class="pt-3 text-xs font-bold uppercase tracking-[.2em] text-emerald-700">{roleLabels[person.data.role] || person.data.role}</span>
+              {isShiqiProfile && <ShiqiCursorPet lang="zh" />}
+            </div>
             <h1 class="mt-4 text-5xl font-bold tracking-tight text-slate-950">{person.data.name}</h1>
             {person.data.nameEn && <p class="mt-2 text-xl text-slate-500">{person.data.nameEn}</p>}
             {person.data.position && <p class="mt-5 font-semibold text-indigo-700">{person.data.position}</p>}
