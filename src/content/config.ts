@@ -48,6 +48,11 @@ const newsCollection = defineCollection({
     bodyEn: z.string().optional(),
     image: z.string().optional(),
     images: z.array(z.string()).optional(),
+    contentImages: z.array(z.object({
+      image: z.string(),
+      caption: z.string().optional(),
+      captionEn: z.string().optional(),
+    })).optional(),
     category: z.enum(['publication', 'award', 'conference', 'general']).optional(),
     featured: z.boolean().default(false),
   }),
