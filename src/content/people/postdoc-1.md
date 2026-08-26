@@ -11,5 +11,6 @@ profileEn: >-
   focuses on the structural and functional mechanisms of membrane proteins, with
   particular interest in understanding membrane protein-mediated transport and
   physiological regulation at the molecular level.
+researchInterest: 国家自然科学基金青年科学基金项目（C类）
 ---
 2022年加入吴惊香课题组攻读博士学位，2025年获得博士学位后留组开展博士后研究。主要从事膜蛋白结构与功能机制研究，致力于从分子层面解析膜蛋白介导的物质转运及其生理调控机制。
