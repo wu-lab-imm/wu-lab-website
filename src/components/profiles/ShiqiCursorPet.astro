@@ -1,0 +1,589 @@
+---
+interface Props {
+  lang?: 'zh' | 'en';
+}
+
+const { lang = 'zh' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const label = lang === 'en' ? 'Show Shiqi' : '显示十七';
+const enabledText = lang === 'en' ? 'On' : '开启';
+const disabledText = lang === 'en' ? 'Off' : '关闭';
+---
+
+<button
+  type="button"
+  class="shiqi-toggle"
+  data-shiqi-toggle
+  data-enabled-text={enabledText}
+  data-disabled-text={disabledText}
+  role="switch"
+  aria-checked="true"
+  aria-label={label}
+>
+  <span class="shiqi-toggle__paw" aria-hidden="true">🐾</span>
+  <span>{label}</span>
+  <span class="shiqi-toggle__track" aria-hidden="true"><span></span></span>
+  <span class="sr-only" data-shiqi-toggle-state>{enabledText}</span>
+</button>
+
+<div
+  class="shiqi-pet"
+  data-shiqi-pet
+  data-spritesheet={`${base}/images/pets/shiqi/spritesheet.webp`}
+  data-actions-base={`${base}/images/pets/shiqi/actions`}
+  aria-hidden="true"
+  hidden
+>
+  <div class="shiqi-pet__sprite" data-shiqi-sprite></div>
+</div>
+
+<style>
+  .shiqi-toggle {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    gap: .55rem;
+    border: 1px solid rgb(199 210 254);
+    border-radius: 9999px;
+    background: rgb(255 255 255 / .92);
+    padding: .45rem .65rem .45rem .75rem;
+    color: rgb(67 56 202);
+    font-size: .8rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 8px 24px rgb(79 70 229 / .12);
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+
+  .shiqi-toggle:hover {
+    border-color: rgb(129 140 248);
+    box-shadow: 0 10px 28px rgb(79 70 229 / .2);
+    transform: translateY(-1px);
+  }
+
+  .shiqi-toggle:focus-visible {
+    outline: 3px solid rgb(165 180 252 / .8);
+    outline-offset: 3px;
+  }
+
+  .shiqi-toggle__paw {
+    font-size: .95rem;
+    filter: grayscale(.2);
+  }
+
+  .shiqi-toggle__track {
+    position: relative;
+    width: 2rem;
+    height: 1.15rem;
+    flex: none;
+    border-radius: 9999px;
+    background: rgb(203 213 225);
+    transition: background-color .2s ease;
+  }
+
+  .shiqi-toggle__track span {
+    position: absolute;
+    left: .15rem;
+    top: .15rem;
+    width: .85rem;
+    height: .85rem;
+    border-radius: 9999px;
+    background: white;
+    box-shadow: 0 1px 4px rgb(15 23 42 / .25);
+    transition: transform .2s ease;
+  }
+
+  .shiqi-toggle[aria-checked="true"] .shiqi-toggle__track {
+    background: rgb(79 70 229);
+  }
+
+  .shiqi-toggle[aria-checked="true"] .shiqi-toggle__track span {
+    transform: translateX(.85rem);
+  }
+
+  .shiqi-pet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: clamp(92px, 9vw, 128px);
+    aspect-ratio: 192 / 208;
+    pointer-events: none;
+    transform: translate3d(var(--shiqi-x, 0), var(--shiqi-y, 0), 0);
+    will-change: transform;
+    contain: layout paint style;
+  }
+
+  .shiqi-pet[hidden] {
+    display: none;
+  }
+
+  .shiqi-pet__sprite {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform-origin: center bottom;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shiqi-toggle,
+    .shiqi-toggle__track,
+    .shiqi-toggle__track span {
+      transition: none;
+    }
+  }
+</style>
+
+<script is:inline>
+(() => {
+  const pet = document.querySelector('[data-shiqi-pet]');
+  const sprite = pet?.querySelector('[data-shiqi-sprite]');
+  const toggle = document.querySelector('[data-shiqi-toggle]');
+  const toggleState = toggle?.querySelector('[data-shiqi-toggle-state]');
+
+  if (pet && sprite && toggle) {
+    document.body.appendChild(pet);
+
+    const storageKey = 'wulab:shiqi:visible:v1';
+    const atlasUrl = pet.dataset.spritesheet || '';
+    const actionsBase = pet.dataset.actionsBase || '';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const interactiveSelector = 'a, button, input, select, textarea, label, dialog, img, [role="button"], [role="switch"], [data-image-viewer-stage]';
+    const arrivalRadius = 32;
+    const rearmDistance = 64;
+    const maxSpeed = 520;
+    const edgePadding = 8;
+    const orientationDelay = 1000;
+    const postActionLookDuration = 5000;
+
+    const actions = [
+      { id: 'paw-grab', frames: 7, sequence: [0, 1, 2, 3, 4, 4, 5, 6], cadence: 155 },
+      { id: 'cat-stretch', frames: 9, sequence: [0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 7, 8], cadence: 220 },
+      { id: 'prone', frames: 7, sequence: [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0], cadence: 220 },
+    ];
+
+    let visible = true;
+    let running = false;
+    let rafId = 0;
+    let previousTime = 0;
+    let x = 0;
+    let y = 0;
+    let hasPosition = false;
+    let targetX = 0;
+    let targetY = 0;
+    let hasTarget = false;
+    let phase = 'idle';
+    let orientationElapsed = 0;
+    let observedTargetX = 0;
+    let observedTargetY = 0;
+    let lastFacing = 'right';
+    let standardFrame = 0;
+    let standardElapsed = 0;
+    let arrivalElapsed = 0;
+    let idlePose = 'standing';
+    let idlePoseElapsed = 0;
+    let idlePoseDuration = 10000;
+    let armed = true;
+    let lastActionId = '';
+    let lastActionTarget = null;
+    let activeAction = null;
+    let actionFrame = 0;
+    let actionElapsed = 0;
+    let actionFlip = false;
+    let trackingAttached = false;
+    let assetsPreloaded = false;
+
+    const safeReadVisibility = () => {
+      try {
+        return window.localStorage.getItem(storageKey) !== 'false';
+      } catch {
+        return true;
+      }
+    };
+
+    const safeStoreVisibility = (value) => {
+      try {
+        window.localStorage.setItem(storageKey, String(value));
+      } catch {
+        // The pet still works when storage is unavailable.
+      }
+    };
+
+    const petSize = () => ({ width: pet.offsetWidth, height: pet.offsetHeight });
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
+    const pageBounds = () => ({
+      width: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+      height: Math.max(document.documentElement.scrollHeight, document.body.scrollHeight),
+    });
+
+    const clampPosition = () => {
+      const { width, height } = petSize();
+      const page = pageBounds();
+      x = clamp(x, edgePadding, page.width - width - edgePadding);
+      y = clamp(y, edgePadding, page.height - height - edgePadding);
+      pet.style.setProperty('--shiqi-x', `${x}px`);
+      pet.style.setProperty('--shiqi-y', `${y}px`);
+    };
+
+    const showAtlasFrame = (row, column) => {
+      sprite.style.backgroundImage = `url("${atlasUrl}")`;
+      sprite.style.backgroundSize = '800% 1100%';
+      sprite.style.backgroundPosition = `${column * 100 / 7}% ${row * 100 / 10}%`;
+      sprite.style.transform = 'scaleX(1)';
+    };
+
+    const actionFrameUrl = (actionId, frame) => `${actionsBase}/${actionId}/${String(frame).padStart(2, '0')}.png`;
+
+    const showActionFrame = () => {
+      if (!activeAction) return;
+      const sourceFrame = activeAction.sequence[actionFrame];
+      sprite.style.backgroundImage = `url("${actionFrameUrl(activeAction.id, sourceFrame)}")`;
+      sprite.style.backgroundSize = 'contain';
+      sprite.style.backgroundPosition = 'center';
+      sprite.style.transform = actionFlip ? 'scaleX(-1)' : 'scaleX(1)';
+      pet.dataset.action = activeAction.id;
+      pet.dataset.actionFrame = String(sourceFrame);
+    };
+
+    const showLookFrame = (dx, dy) => {
+      if (Math.hypot(dx, dy) < 8) {
+        showAtlasFrame(0, 6);
+        return;
+      }
+      const degrees = (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360;
+      const directionIndex = Math.round(degrees / 22.5) % 16;
+      showAtlasFrame(directionIndex < 8 ? 9 : 10, directionIndex % 8);
+    };
+
+    const preloadAssets = () => {
+      if (assetsPreloaded) return;
+      assetsPreloaded = true;
+      const atlas = new Image();
+      atlas.src = atlasUrl;
+      for (const action of actions) {
+        for (let frame = 0; frame < action.frames; frame += 1) {
+          const image = new Image();
+          image.src = actionFrameUrl(action.id, frame);
+        }
+      }
+    };
+
+    const randomIdleDuration = (pose) => pose === 'standing'
+      ? 8000 + Math.random() * 6000
+      : 5000 + Math.random() * 4000;
+
+    const resetIdleCycle = (pose = 'standing') => {
+      phase = 'idle';
+      idlePose = pose;
+      idlePoseElapsed = 0;
+      idlePoseDuration = randomIdleDuration(pose);
+      standardFrame = 0;
+      standardElapsed = 0;
+    };
+
+    const settleAtLastPosition = () => {
+      hasTarget = false;
+      orientationElapsed = 0;
+      arrivalElapsed = 0;
+      activeAction = null;
+      actionFrame = 0;
+      actionElapsed = 0;
+      actionFlip = false;
+      delete pet.dataset.action;
+      delete pet.dataset.actionFrame;
+      sprite.style.transform = 'scaleX(1)';
+      resetIdleCycle();
+      showAtlasFrame(0, 0);
+    };
+
+    const finishAction = () => {
+      activeAction = null;
+      actionFrame = 0;
+      actionElapsed = 0;
+      sprite.style.transform = 'scaleX(1)';
+      delete pet.dataset.action;
+      delete pet.dataset.actionFrame;
+      if (hasTarget) {
+        const { width, height } = petSize();
+        const dx = targetX - (x + width / 2);
+        const dy = targetY - (y + height / 2);
+        showLookFrame(dx, dy);
+        arrivalElapsed = 0;
+        if (Math.hypot(dx, dy) > arrivalRadius) {
+          phase = 'orienting';
+          orientationElapsed = 0;
+        } else {
+          phase = 'arrived';
+        }
+      } else {
+        resetIdleCycle();
+        showAtlasFrame(0, 0);
+      }
+    };
+
+    const startRandomAction = () => {
+      const choices = actions.filter((action) => action.id !== lastActionId);
+      const next = choices[Math.floor(Math.random() * choices.length)] || actions[0];
+      activeAction = next;
+      phase = 'action';
+      lastActionId = next.id;
+      lastActionTarget = { x: targetX, y: targetY };
+      armed = false;
+      actionFrame = 0;
+      actionElapsed = 0;
+      const { width } = petSize();
+      actionFlip = next.id === 'paw-grab' && targetX < x + width / 2;
+      showActionFrame();
+    };
+
+    const setPageTarget = (nextX, nextY, forceRearm = false) => {
+      const hadTarget = hasTarget;
+      const page = pageBounds();
+      targetX = clamp(nextX, 0, page.width);
+      targetY = clamp(nextY, 0, page.height);
+      hasTarget = true;
+      if (forceRearm || !lastActionTarget || Math.hypot(targetX - lastActionTarget.x, targetY - lastActionTarget.y) >= rearmDistance) {
+        armed = true;
+      }
+
+      if (activeAction || phase === 'orienting') return;
+
+      const { width, height } = petSize();
+      const distance = Math.hypot(targetX - (x + width / 2), targetY - (y + height / 2));
+      const movedSinceObservation = Math.hypot(targetX - observedTargetX, targetY - observedTargetY);
+      if (!hadTarget || forceRearm || phase === 'idle' || (phase === 'arrived' && distance > arrivalRadius) || (phase === 'chasing' && movedSinceObservation >= rearmDistance)) {
+        phase = 'orienting';
+        orientationElapsed = 0;
+        arrivalElapsed = 0;
+      }
+    };
+
+    const animateStandardRow = (row, frameCount, cadence, deltaMs) => {
+      standardElapsed += deltaMs;
+      if (standardElapsed >= cadence) {
+        standardElapsed %= cadence;
+        standardFrame = (standardFrame + 1) % frameCount;
+      }
+      showAtlasFrame(row, standardFrame);
+    };
+
+    const animateProne = (deltaMs) => {
+      standardElapsed += deltaMs;
+      if (standardElapsed >= 260) {
+        standardElapsed %= 260;
+        standardFrame = (standardFrame + 1) % 7;
+      }
+      sprite.style.backgroundImage = `url("${actionFrameUrl('prone', standardFrame)}")`;
+      sprite.style.backgroundSize = 'contain';
+      sprite.style.backgroundPosition = 'center';
+      sprite.style.transform = 'scaleX(1)';
+    };
+
+    const tick = (time) => {
+      if (!running) return;
+      const deltaMs = Math.min(time - previousTime || 0, 50);
+      previousTime = time;
+
+      if (activeAction) {
+        actionElapsed += deltaMs;
+        if (actionElapsed >= activeAction.cadence) {
+          actionElapsed %= activeAction.cadence;
+          actionFrame += 1;
+          if (actionFrame >= activeAction.sequence.length) finishAction();
+          else showActionFrame();
+        }
+      } else if (phase === 'orienting' && hasTarget) {
+        const { width, height } = petSize();
+        const dx = targetX - (x + width / 2);
+        const dy = targetY - (y + height / 2);
+        showLookFrame(dx, dy);
+        orientationElapsed += deltaMs;
+        if (orientationElapsed >= orientationDelay) {
+          observedTargetX = targetX;
+          observedTargetY = targetY;
+          phase = Math.hypot(dx, dy) > arrivalRadius ? 'chasing' : 'arrived';
+          arrivalElapsed = 0;
+        }
+      } else if (phase === 'chasing' && hasTarget) {
+        const { width, height } = petSize();
+        const centerX = x + width / 2;
+        const centerY = y + height / 2;
+        const dx = targetX - centerX;
+        const dy = targetY - centerY;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance > arrivalRadius) {
+          const movement = Math.min(maxSpeed * deltaMs / 1000, distance - arrivalRadius * .55);
+          if (distance > 0 && movement > 0) {
+            x += dx / distance * movement;
+            y += dy / distance * movement;
+            lastFacing = dx < -2 ? 'left' : dx > 2 ? 'right' : lastFacing;
+            clampPosition();
+          }
+          animateStandardRow(lastFacing === 'left' ? 2 : 1, 8, 110, deltaMs);
+        } else {
+          phase = 'arrived';
+          arrivalElapsed = 0;
+          showLookFrame(dx, dy);
+        }
+      } else if (phase === 'arrived' && hasTarget) {
+        const { width, height } = petSize();
+        const dx = targetX - (x + width / 2);
+        const dy = targetY - (y + height / 2);
+        if (Math.hypot(dx, dy) > arrivalRadius) {
+          phase = 'orienting';
+          orientationElapsed = 0;
+          arrivalElapsed = 0;
+          showLookFrame(dx, dy);
+        } else {
+          showLookFrame(dx, dy);
+          arrivalElapsed += deltaMs;
+          if (armed && arrivalElapsed >= 250) {
+            startRandomAction();
+          } else if (!armed && arrivalElapsed >= postActionLookDuration) {
+            resetIdleCycle();
+          }
+        }
+      } else {
+        if (phase !== 'idle') resetIdleCycle();
+        idlePoseElapsed += deltaMs;
+        if (idlePoseElapsed >= idlePoseDuration) {
+          idlePose = idlePose === 'standing' ? 'prone' : 'standing';
+          idlePoseElapsed = 0;
+          idlePoseDuration = randomIdleDuration(idlePose);
+          standardFrame = 0;
+          standardElapsed = 0;
+        }
+        if (idlePose === 'standing') animateStandardRow(0, 6, 180, deltaMs);
+        else animateProne(deltaMs);
+      }
+
+      pet.dataset.phase = phase;
+      pet.dataset.idlePose = idlePose;
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    const stopLoop = () => {
+      running = false;
+      if (rafId) window.cancelAnimationFrame(rafId);
+      rafId = 0;
+    };
+
+    const startLoop = () => {
+      if (!visible || reducedMotion.matches || document.hidden || running) return;
+      running = true;
+      previousTime = performance.now();
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    const updateToggle = () => {
+      toggle.setAttribute('aria-checked', String(visible));
+      if (toggleState) toggleState.textContent = visible ? toggle.dataset.enabledText || '' : toggle.dataset.disabledText || '';
+    };
+
+    const setVisible = (nextVisible, persist = true) => {
+      visible = nextVisible;
+      pet.hidden = !visible;
+      updateToggle();
+      if (persist) safeStoreVisibility(visible);
+      if (!visible) {
+        stopLoop();
+        detachTrackingListeners();
+        settleAtLastPosition();
+        return;
+      }
+
+      window.requestAnimationFrame(() => {
+        if (!hasPosition) {
+          const { width, height } = petSize();
+          x = window.scrollX + window.innerWidth - width - 24;
+          y = window.scrollY + window.innerHeight - height - 24;
+          hasPosition = true;
+        }
+        clampPosition();
+        showAtlasFrame(0, 0);
+        if (!reducedMotion.matches) {
+          preloadAssets();
+          attachTrackingListeners();
+          startLoop();
+        }
+      });
+    };
+
+    toggle.addEventListener('click', () => setVisible(!visible));
+
+    const handlePointerMove = (event) => {
+      if (event.pointerType === 'touch') return;
+      setPageTarget(event.clientX + window.scrollX, event.clientY + window.scrollY);
+    };
+
+    const handleTouchClick = (event) => {
+      if (!(event instanceof PointerEvent) || event.pointerType !== 'touch') return;
+      if (event.target instanceof Element && event.target.closest(interactiveSelector)) return;
+      setPageTarget(event.clientX + window.scrollX, event.clientY + window.scrollY, true);
+    };
+
+    const handleMouseLeave = () => settleAtLastPosition();
+
+    const handleResize = () => {
+      clampPosition();
+      if (hasTarget) {
+        const page = pageBounds();
+        targetX = clamp(targetX, 0, page.width);
+        targetY = clamp(targetY, 0, page.height);
+      }
+    };
+
+    const handleBlur = () => {
+      settleAtLastPosition();
+      stopLoop();
+    };
+
+    const handleFocus = () => startLoop();
+
+    const attachTrackingListeners = () => {
+      if (trackingAttached) return;
+      trackingAttached = true;
+      window.addEventListener('pointermove', handlePointerMove, { passive: true });
+      document.addEventListener('click', handleTouchClick, { passive: true });
+      document.documentElement.addEventListener('mouseleave', handleMouseLeave);
+      window.addEventListener('resize', handleResize, { passive: true });
+      window.addEventListener('blur', handleBlur);
+      window.addEventListener('focus', handleFocus);
+    };
+
+    const detachTrackingListeners = () => {
+      if (!trackingAttached) return;
+      trackingAttached = false;
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('click', handleTouchClick);
+      document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+    };
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    });
+
+    reducedMotion.addEventListener('change', () => {
+      stopLoop();
+      if (!visible) return;
+      settleAtLastPosition();
+      if (reducedMotion.matches) {
+        detachTrackingListeners();
+      } else {
+        preloadAssets();
+        attachTrackingListeners();
+        startLoop();
+      }
+    });
+
+    setVisible(safeReadVisibility(), false);
+  }
+})();
+</script>
