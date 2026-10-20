@@ -9,7 +9,7 @@ researchInterest: >-
   我致力于探究细胞膜内生化反应和分子通量的空间组织方式。我的研究主要集中在膜嵌入的生物合成复合物、脂质代谢机制以及细胞器转运蛋白上，尤其关注蛋白质组装、底物传递和构象动力学如何与酶活性和细胞内稳态相耦合。
 order: 25
 startYear: 2024
-email: zhoujun@imm.ac.cn
+email: zhoujun(AT)imm.ac.cn
 bio: >
   膜嵌入代谢机器和转运系统的结构与机制生物学。
 

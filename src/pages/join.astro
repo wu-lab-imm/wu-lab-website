@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import joinContent from '../join.json';
+import { displayEmail } from '../lib/email';
 
 // 职位信息
 const legacyPositions = [
@@ -203,7 +204,7 @@ const { headline, positions, applicationSteps, environment: envItems, contact } 
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-amber-500">邮箱</h3>
-              <a href={`mailto:${contact.email}`} class="text-amber-400 hover:text-amber-300 transition-colors">{contact.email}</a>
+              <span class="text-amber-400">{displayEmail(contact.email)}</span>
             </div>
             <div class="md:col-span-2">
               <h3 class="font-semibold mb-2 text-amber-500">地址</h3>

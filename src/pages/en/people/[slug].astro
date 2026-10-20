@@ -6,7 +6,7 @@ import PublicationItem from '../../../components/PublicationItem.astro';
 import { getCollection } from 'astro:content';
 import { visiblePublications } from '../../../publications';
 import { imageFallbackUrl, imageUrl } from '../../../lib/images';
-import { emailHref } from '../../../lib/email';
+import { displayEmail } from '../../../lib/email';
 
 export async function getStaticPaths() {
   const people = await getCollection('people');
@@ -75,7 +75,7 @@ const positionLabel = isAlumni ? person.data.positionEn : person.data.positionEn
             </div>
 
             <div class="mt-6 space-y-2.5 text-sm leading-6 text-slate-600">
-              {person.data.email && <a class="block break-all font-medium text-indigo-600 hover:underline" href={emailHref(person.data.email)}>{person.data.email}</a>}
+              {person.data.email && <span class="block break-all font-medium text-indigo-600">{displayEmail(person.data.email)}</span>}
               {person.data.startYear && <p><span class="font-semibold text-slate-700">Joined:</span> {person.data.startYear}</p>}
               {isAlumni && person.data.graduationYear && <p><span class="font-semibold text-slate-700">Graduated / left:</span> {person.data.graduationYear}</p>}
               {person.data.affiliationEn && <p>{person.data.affiliationEn}</p>}
