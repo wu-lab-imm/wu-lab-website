@@ -1,5 +1,10 @@
 import { defineCollection, z } from 'astro:content';
 
+const emailSchema = z.string().refine(
+  (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.replace(/\(at\)/i, '@')),
+  '邮箱需要使用 name@example.com 或 name(AT)example.com 格式',
+);
+
 // 团队成员集合配置
 const peopleCollection = defineCollection({
   type: 'content',
@@ -7,7 +12,7 @@ const peopleCollection = defineCollection({
     name: z.string(),
     nameEn: z.string().optional(),
     role: z.enum(['PI', 'Postdoc', 'PhD', 'Master', 'ResearchAssistant', 'Undergraduate', 'Alumni']),
-    email: z.string().email().optional(),
+    email: emailSchema.optional(),
     photo: z.string().optional(),
     researchInterest: z.string().optional(),
     researchInterestEn: z.string().optional(),

@@ -2,7 +2,7 @@
 name: 吴惊香
 nameEn: Jing-Xiang Wu
 role: PI
-email: wujingxiang@imm.ac.cn
+email: wujingxiang(AT)imm.ac.cn
 bio: >-
   长期从事疾病相关药物靶点蛋白的结构药理学研究，并基于结构研发药物。解析了神经系统疾病靶标——去甲肾上腺素转运体NET底物识别机制和抗抑郁药瑞达法辛药物作用机制；确定了代谢门控药靶KATP的组装模式，阐述了磺酰脲类和格列奈类药物的降糖机制；揭示了甲状腺氧化酶和脑特异激酶的调控机制；为相应靶标的药物研发提供了结构基础。承担6项国家和省部级科研课题，在Nature、Cell等杂志发表论文20余篇。
 bioEn: >-

@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 import PersonCard from '../components/PersonCard.astro';
 import { getCollection } from 'astro:content';
 import { imageFallbackUrl, imageUrl } from '../lib/images';
+import { emailHref } from '../lib/email';
 
 // 获取所有团队成员
 const allPeople = await getCollection('people');
@@ -94,7 +95,7 @@ const piCareer = (pi[0]?.data.career || []).map((item) => {
                   <p class="text-sm text-gray-600"><span class="font-medium">科室：</span>{pi[0].data.department || '天然药物活性物质与功能国家重点实验室'}</p>
                   <p class="text-sm text-gray-600">
                     <span class="font-medium">联系：</span>
-                    <a href={`mailto:${pi[0].data.email}`} class="text-amber-600 hover:text-amber-700">{pi[0].data.email}</a>
+                    <a href={emailHref(pi[0].data.email || '')} class="text-amber-600 hover:text-amber-700">{pi[0].data.email}</a>
                   </p>
                 </div>
               </div>
