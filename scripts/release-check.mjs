@@ -8,6 +8,7 @@ const sourceDirs = [join(root, 'src'), join(root, 'admin')];
 const basePath = '/wu-lab-website';
 const errors = [];
 const warnings = [];
+const imageExtensions = new Set(['.avif', '.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp']);
 
 async function filesUnder(directory) {
   const result = [];
@@ -34,6 +35,7 @@ function localDistTarget(value) {
 
 const sourceFiles = (await Promise.all(sourceDirs.map(filesUnder))).flat();
 const referencedImages = new Set();
+const referencedImageDirectories = new Set();
 for (const file of sourceFiles) {
   if (file.includes(`${sep}archive${sep}`)) continue;
   const text = await readFile(file, 'utf8');
@@ -45,6 +47,24 @@ for (const file of sourceFiles) {
   }
   for (const match of text.matchAll(/["'`](\/images\/[A-Za-z0-9._~!&'()*+,;=:@%/-]+\.(?:avif|gif|jpe?g|png|svg|webp))/gi)) {
     referencedImages.add(match[1].slice(1));
+  }
+  for (const match of text.matchAll(/\$\{base\}\/(images\/[A-Za-z0-9._~!&'()*+,;=:@%/-]+)(?=["'`}])/gi)) {
+    if (!imageExtensions.has(extname(match[1]).toLowerCase())) referencedImageDirectories.add(match[1]);
+  }
+}
+
+// Interactive components may construct individual frame URLs at runtime.
+// A literal image-directory reference marks every image below it as used.
+for (const directory of referencedImageDirectories) {
+  try {
+    const files = await filesUnder(join(publicDir, ...directory.split('/')));
+    for (const file of files) {
+      if (imageExtensions.has(extname(file).toLowerCase())) {
+        referencedImages.add(relative(publicDir, file).split(sep).join('/'));
+      }
+    }
+  } catch {
+    errors.push(`内容引用的图片目录不存在：public/${directory}`);
   }
 }
 
@@ -83,7 +103,7 @@ for (const file of htmlFiles) {
 }
 
 const imageDir = join(publicDir, 'images');
-const imageFiles = await filesUnder(imageDir);
+const imageFiles = (await filesUnder(imageDir)).filter(file => imageExtensions.has(extname(file).toLowerCase()));
 let totalBytes = 0;
 let orphanCount = 0;
 for (const file of imageFiles) {
